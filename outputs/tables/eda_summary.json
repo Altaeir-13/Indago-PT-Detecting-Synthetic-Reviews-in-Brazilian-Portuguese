@@ -1,0 +1,16 @@
+{
+  "total_samples_after_cleaning": 29988,
+  "missing_text": 0,
+  "missing_category": 0,
+  "missing_label": 0,
+  "duplicated_rows": 683,
+  "duplicated_texts": 1537,
+  "char_len_min": 1,
+  "char_len_mean": 82.95108043217287,
+  "char_len_median": 92.0,
+  "char_len_max": 272,
+  "token_len_min": 1,
+  "token_len_mean": 13.98045885020675,
+  "token_len_median": 15.0,
+  "token_len_max": 45
+}

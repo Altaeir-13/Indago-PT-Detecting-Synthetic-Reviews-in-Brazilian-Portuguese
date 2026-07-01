@@ -1,0 +1,21 @@
+error_type,category,label,prediction,prob_or_score_fake_label_0,text
+false_positive_genuine_predicted_fake,bed_bath_table,1,0,0.7197120189666748,"O produto é de péssima qualidade, a imagem é descrição não são fiéis ao produto"
+false_positive_genuine_predicted_fake,cool_stuff,1,0,0.8666337728500366,"Quanto à entrega do produto tudo certo, apenas achei o produto de material muito fraco."
+false_positive_genuine_predicted_fake,health_beauty,1,0,0.8462384343147278,"Mas uma vez a entrega está demorando muito, até agora não tenho nenhuma notícia do meu pacote"
+false_positive_genuine_predicted_fake,watches_gifts,1,0,0.9669690728187561,Ainda é cedo para avaliar o produto
+false_positive_genuine_predicted_fake,electronics,1,0,0.5982838869094849,"ainda não testei o produto, mas a entrega foi rápida. obrigado"
+false_positive_genuine_predicted_fake,baby,1,0,0.7164350748062134,"Para recomendar preciso ter 99% de certeza. Não recebi o produto até hoje. Vocês não sanaram meu problema. Atendimento confuso a resposta de vocês a minha solicitação não foi precisa, e até hoje nada."
+false_positive_genuine_predicted_fake,housewares,1,0,0.9583461284637451,Agradeço pelo comprometimento da empresa. Produto entregue no prazo com responsabilidade.
+false_positive_genuine_predicted_fake,cool_stuff,1,0,0.7619593143463135,"Como sempre prestando um excelente trabalho, e surpreendo cm a rapidez na entrega"
+false_positive_genuine_predicted_fake,cool_stuff,1,0,0.9898883700370789,"Produto chegou no ultimo dia do prazo, ou seja ,exatamente a data que foi estipulado a entrega. Produto chegou bem embalado, muito bom e resistente. Recomendo a loja e o produto ."
+false_positive_genuine_predicted_fake,perfumery,1,0,0.7855374217033386,O produto é exatamente o que eu solicitei e a entrega foi feita antes do combinado. Estou satisfeita
+false_negative_fake_predicted_genuine,bed_bath_table,0,1,0.39162349700927734,"Não gostei dos travesseiros. Na minha opinião o prazo de entrega é muito longo, estou aguardando resposta."
+false_negative_fake_predicted_genuine,auto,0,1,0.054924845695495605,"Top sem questiona top top. Recomendo.Produto entregue no prazo, recomendo.Recebi o produto em perfeitas"
+false_negative_fake_predicted_genuine,housewares,0,1,0.06104952096939087,"O produto não chegou até o momento. Satisfeita com o produto e a entrega, recomendo!Boa noite!"
+false_negative_fake_predicted_genuine,housewares,0,1,0.0050653815269470215,"Tudo ok. Só que eu não recebi o produto, pois estava de parabéns. Compraria novamenteMuit"
+false_negative_fake_predicted_genuine,perfumery,0,1,0.0012751221656799316,Muito bom!!! Fiquei espantado com a mochila. Tive que retirar e o produto não estava no prazo de entrega. Fic
+false_negative_fake_predicted_genuine,garden_tools,0,1,0.3235502243041992,"Muito boa Produto entregue antes do prazo, recomendo a todos.Estou muito satisfeita."
+false_negative_fake_predicted_genuine,telephony,0,1,0.00013911724090576172,Estou parabenizando as lojas lannister pela loja que ajudou a trazer as mercadorias na data correta.
+false_negative_fake_predicted_genuine,cool_stuff,0,1,0.2057638168334961,Chegou mt rápido bem antes do prazo! Pode comprar no baratheon!!! Estou muito satisfeita com o produto
+false_negative_fake_predicted_genuine,bed_bath_table,0,1,0.10299825668334961,Foi entregue no prazo.Gostei da rapidez na entrega do produto.
+false_negative_fake_predicted_genuine,telephony,0,1,0.44478094577789307,Se eu não tivesse precisando não ter recebido a mercadoria pois o atraso de entrega não foi ter a mercadoria e
