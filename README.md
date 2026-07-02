@@ -1,8 +1,12 @@
-# Indago PT: Detecting Synthetic Reviews in Brazilian Portuguese
+﻿# Indago PT: Detecting Synthetic Reviews in Brazilian Portuguese
 
 Experimento reproduzivel para a 3a avaliacao de Aprendizado Profundo:
 classificacao binaria de reviews em portugues brasileiro usando uma CNN 1D em
 PyTorch, comparada com baselines classicos de PLN.
+
+Repositorio do projeto:
+
+https://github.com/Altaeir-13/Indago-PT-Detecting-Synthetic-Reviews-in-Brazilian-Portuguese
 
 ## Objetivo
 
@@ -15,6 +19,14 @@ O projeto trata a unidade de analise como a review isolada. Ele nao detecta
 astroturfing completo, campanhas coordenadas, comportamento de usuarios,
 padroes temporais ou grafos de contas, porque o dataset principal nao contem
 usuario, data, rating, produto especifico nem relacoes entre contas.
+
+## Codigo principal
+
+O experimento foi consolidado em um unico notebook autocontido:
+
+    notebooks/01_experimento_fake_reviews.ipynb
+
+A pasta `src/` foi removida porque toda a logica de carregamento, EDA, preprocessamento, split, baselines, CNN, avaliacao e geracao de outputs esta no notebook.
 
 ## Dataset
 
@@ -33,7 +45,7 @@ Para preparar o dataset:
 1. Acesse https://github.com/cristianomg10/fake-reviews-ptbr-dataset.
 2. Baixe o arquivo `true_fake_dataset_top15.csv`.
 3. Coloque o arquivo em `data/raw/true_fake_dataset_top15.csv`.
-4. Rode `python -m src.run_experiment --data-path data/raw/true_fake_dataset_top15.csv`.
+4. Abra `notebooks/01_experimento_fake_reviews.ipynb` e execute as celulas em ordem.
 
 A base e derivada do dataset publico da Olist:
 
@@ -55,38 +67,26 @@ python -m pip install -r requirements.txt
 
 ## Como executar
 
-Execucao completa com o dataset real:
+O codigo principal do experimento esta em:
 
-```bash
-python -m src.run_experiment --data-path data/raw/true_fake_dataset_top15.csv
-```
+    notebooks/01_experimento_fake_reviews.ipynb
 
-Ajuda da CLI:
+Para reproduzir o experimento completo:
 
-```bash
-python -m src.run_experiment --help
-```
+1. Instale as dependencias com `python -m pip install -r requirements.txt`.
+2. Coloque o dataset em `data/raw/true_fake_dataset_top15.csv`.
+3. Abra o notebook no Jupyter Notebook, JupyterLab ou VS Code.
+4. Mantenha `USE_SMOKE_TEST = False`.
+5. Execute todas as celulas em ordem (`Run All`).
 
-Smoke test com CSV sintetico pequeno:
+Smoke test rapido:
 
-```bash
-python -m src.run_experiment ^
-  --data-path tests/fixtures/smoke_reviews.csv ^
-  --output-dir outputs/smoke ^
-  --epochs 1 ^
-  --batch-size 4 ^
-  --vocab-size 200 ^
-  --max-len 24 ^
-  --embedding-dim 16 ^
-  --filters 16 ^
-  --kernel-size 3 ^
-  --patience 1 ^
-  --tfidf-max-features 200 ^
-  --tfidf-min-df 1
-```
+1. Abra o notebook.
+2. Altere `USE_SMOKE_TEST = True` na secao de configuracao global.
+3. Execute todas as celulas.
+4. Os resultados de smoke sao gravados em `outputs/smoke/`, que e ignorado pelo Git.
 
-Em PowerShell, use crase ``` ` ``` no lugar de `^` para quebrar linhas, ou rode
-o comando em uma unica linha.
+O notebook e autocontido e nao depende da pasta `src/`.
 
 ## Estrutura
 
@@ -99,16 +99,6 @@ o comando em uma unica linha.
 |   `-- raw/
 |-- notebooks/
 |   `-- 01_experimento_fake_reviews.ipynb
-|-- src/
-|   |-- config.py
-|   |-- data_loader.py
-|   |-- preprocess.py
-|   |-- eda.py
-|   |-- baselines.py
-|   |-- train_cnn.py
-|   |-- evaluate.py
-|   |-- utils.py
-|   `-- run_experiment.py
 |-- outputs/
 |   |-- figures/
 |   |-- tables/
@@ -134,7 +124,7 @@ o comando em uma unica linha.
 7. Treina TF-IDF + SVM Linear.
 8. Treina CNN 1D em PyTorch com early stopping.
 9. Avalia todos os modelos no teste.
-10. Salva metricas, graficos, modelos e analise de erros em `outputs/`.
+10. Salva metricas, graficos, modelos, historico de treino, resumo do split e analise de erros em `outputs/`.
 
 ## CNN 1D em PyTorch
 
@@ -260,18 +250,18 @@ BERTimbau permanece como extensao futura ou comparacao posterior, nao como
 modelo principal desta avaliacao.
 ## Exportacao para PDF
 
-Os arquivos finais editaveis estao em:
+A fonte oficial do relatorio e o arquivo LaTeX:
 
-- `report/relatorio.md`
-- `report/slides.md`
+    report/relatorio.tex
 
-Quando Pandoc estiver instalado, gere os PDFs com:
+Compile o relatorio a partir da pasta report/ com LaTeX/BibTeX, por exemplo:
 
-```bash
-pandoc report/relatorio.md -o report/relatorio.pdf
-pandoc report/slides.md -o report/slides.pdf
-```
+    cd report
+    pdflatex relatorio.tex
+    bibtex relatorio
+    pdflatex relatorio.tex
+    pdflatex relatorio.tex
 
-No VS Code, uma alternativa e abrir cada arquivo Markdown e usar uma extensao de
-exportacao para PDF, como Markdown PDF. Verifique visualmente os PDFs antes de
-entregar para garantir que tabelas, quebras de pagina e figuras estejam legiveis.
+O PDF final esperado e report/relatorio.pdf. Verifique visualmente o PDF antes
+de entregar para garantir que tabelas, quebras de pagina, figuras e referencias
+estejam legiveis.

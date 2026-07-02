@@ -104,7 +104,7 @@ Texto -> tokenizacao -> padding/truncamento -> embedding treinavel
 
 ## Slide 10 - Trecho real de codigo: CNN
 
-Trecho curto de src/train_cnn.py:
+Trecho curto da CNN no notebook `notebooks/01_experimento_fake_reviews.ipynb`:
 
 ```python
 self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=0)

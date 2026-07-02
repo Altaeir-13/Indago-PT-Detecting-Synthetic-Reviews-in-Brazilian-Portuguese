@@ -1,0 +1,4 @@
+split,samples,label_0,label_1
+train,20991,10500,10491
+validation,4498,2250,2248
+test,4499,2250,2249
