@@ -1,0 +1,9 @@
+{
+  "python_version": "3.14.5",
+  "torch_version": "2.12.1+cpu",
+  "sklearn_version": "1.9.0",
+  "pandas_version": "3.0.3",
+  "cuda_available": false,
+  "cuda_device_name": "CPU",
+  "device_used": "cpu"
+}

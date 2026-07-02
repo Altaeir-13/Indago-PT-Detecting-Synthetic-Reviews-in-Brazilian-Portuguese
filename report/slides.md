@@ -2,7 +2,8 @@
 
 **Deteccao de reviews falsas/sinteticas em portugues brasileiro usando CNN 1D**
 
-- Estudante: Altair
+- Estudante: Randerson Sousa de Sá Nunes
+- Professor: Prof. Dr. Rafael Torres Anchieta
 - Disciplina: Aprendizado Profundo - 3a avaliacao
 - Dataset: Fake Reviews PT-BR Dataset
 - Projeto: https://github.com/Altaeir-13/Indago-PT-Detecting-Synthetic-Reviews-in-Brazilian-Portuguese
@@ -144,12 +145,12 @@ roc_auc_score(y_true == 0, score_label_0)
 
 | Modelo | Accuracy | Precision 0 | Recall 0 | F1 0 | F1 macro | AUC-ROC 0 |
 |---|---:|---:|---:|---:|---:|---:|
-| TF-IDF + Regressao Logistica | 0.885086 | 0.866385 | 0.910667 | 0.887974 | 0.885009 | 0.949770 |
-| TF-IDF + SVM Linear | 0.897533 | 0.882428 | 0.917333 | 0.899542 | 0.897492 | 0.962379 |
-| CNN 1D PyTorch | 0.949544 | 0.950557 | 0.948444 | 0.949499 | 0.949544 | 0.987807 |
+| TF-IDF + Regressao Logistica | 0.881085 | 0.867553 | 0.899556 | 0.883264 | 0.881043 | 0.949981 |
+| TF-IDF + SVM Linear | 0.894421 | 0.886037 | 0.905333 | 0.895581 | 0.894408 | 0.959195 |
+| CNN 1D PyTorch | 0.958880 | 0.965719 | 0.951556 | 0.958585 | 0.958878 | 0.990750 |
 
-- CNN: 94,95% de acuracia, 94,95% de F1 macro e 98,78% de AUC-ROC.
-- Ganho aproximado sobre o SVM linear: 5,2 pontos percentuais de acuracia.
+- CNN: 95,89% de acuracia, 95,89% de F1 macro e 99,08% de AUC-ROC.
+- Ganho aproximado sobre o SVM linear: 6,4 pontos percentuais de acuracia.
 
 ## Slide 13 - Curvas de treino e matriz de confusao
 
