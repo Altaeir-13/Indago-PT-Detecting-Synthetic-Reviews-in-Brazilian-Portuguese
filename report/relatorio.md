@@ -132,11 +132,11 @@ Tabela 5 - Resultados quantitativos no conjunto de teste.
 
 | Modelo | Accuracy | Precision 0 | Recall 0 | F1 0 | F1 macro | AUC-ROC 0 |
 |---|---:|---:|---:|---:|---:|---:|
-| TF-IDF + Regressão Logística | 0.885086 | 0.866385 | 0.910667 | 0.887974 | 0.885009 | 0.949770 |
-| TF-IDF + SVM Linear | 0.897533 | 0.882428 | 0.917333 | 0.899542 | 0.897492 | 0.962379 |
-| CNN 1D PyTorch | 0.949544 | 0.950557 | 0.948444 | 0.949499 | 0.949544 | 0.987807 |
+| TF-IDF + Regressão Logística | 0.881085 | 0.867553 | 0.899556 | 0.883264 | 0.881043 | 0.949981 |
+| TF-IDF + SVM Linear | 0.894421 | 0.886037 | 0.905333 | 0.895581 | 0.894408 | 0.959195 |
+| CNN 1D PyTorch | 0.962658 | 0.963078 | 0.962222 | 0.962650 | 0.962658 | 0.991639 |
 
-A CNN 1D atingiu 0,949544 de acurácia, 0,949499 de F1-score para a classe falsa/sintética, 0,949544 de F1 macro e 0,987807 de AUC-ROC orientada para a classe 0. Entre os baselines, o SVM Linear apresentou desempenho superior ao da Regressão Logística.
+A CNN 1D atingiu 0,962658 de acurácia, 0,962650 de F1-score para a classe falsa/sintética, 0,962658 de F1 macro e 0,991639 de AUC-ROC orientada para a classe 0. Entre os baselines, o SVM Linear apresentou desempenho superior ao da Regressão Logística.
 
 ![Figura 5 - Curva de perda da CNN 1D durante o treinamento.](../outputs/figures/cnn_loss_curve.png)
 
@@ -146,7 +146,7 @@ A CNN 1D atingiu 0,949544 de acurácia, 0,949499 de F1-score para a classe falsa
 
 ## 8. Análise e Discussão
 
-A CNN 1D apresentou o melhor desempenho geral do experimento. Em comparação com o SVM Linear, a CNN obteve ganho aproximado de 5,2 pontos percentuais de acurácia. Esse resultado sugere que o uso de embeddings treináveis e filtros convolucionais foi eficaz para capturar padrões locais relevantes nas avaliações textuais.
+A CNN 1D apresentou o melhor desempenho geral do experimento. Em comparação com o SVM Linear, a CNN obteve ganho aproximado de 6,8 pontos percentuais de acurácia. Esse resultado sugere que o uso de embeddings treináveis e filtros convolucionais foi eficaz para capturar padrões locais relevantes nas avaliações textuais.
 
 O SVM Linear foi o baseline clássico mais forte, indicando que representações TF-IDF continuam competitivas em tarefas de classificação textual. A Regressão Logística também apresentou desempenho consistente, mas inferior ao SVM Linear e à CNN 1D.
 
@@ -175,26 +175,27 @@ Esses casos sugerem que avaliações muito curtas, genéricas, padronizadas ou c
 
 A comparação com a literatura deve considerar que os protocolos, conjuntos de dados, métricas e objetivos não são idênticos. Ainda assim, a Tabela 7 posiciona o presente trabalho em relação a referências relevantes da área.
 
-Tabela 7 - Comparação qualitativa com trabalhos relacionados.
+Borges et al. (2025) avaliaram modelos clássicos e/ou contextuais para fake reviews em português brasileiro. Embora os protocolos não tenham sido reproduzidos integralmente, o trabalho é usado como referência direta de domínio e dataset. Neste relatório, a comparação numérica é limitada porque os resultados do artigo não foram reproduzidos sob o mesmo split e configuração experimental.
 
-| Trabalho | Dataset | Modelo | Métrica/resultado | Observação |
+Tabela 7 - Comparação objetiva com trabalhos relacionados.
+
+| Trabalho | Dataset | Modelo | Métrica principal | Resultado |
 |---|---|---|---|---|
-| Borges et al. (2025) | Fake Reviews PT-BR | Modelos clássicos e representações textuais/contextuais | Benchmark de referência | Protocolos não reproduzidos integralmente neste trabalho |
-| Kim (2014) | Sentenças em inglês | CNN para classificação textual | Referência arquitetural | Fundamenta o uso de convolução em texto |
-| Souza et al. (2020) | Corpora em português | BERTimbau | Modelo pré-treinado | Extensão futura para comparação contextual |
-| Este trabalho | Fake Reviews PT-BR | CNN 1D PyTorch | F1 macro 0,949544; AUC 0,987807 | Implementação própria e reprodutível |
-
+| Borges et al. (2025) | Fake Reviews PT-BR | Modelos clássicos e contextuais | Benchmark de classificação; métrica numérica não extraída do material local consultado | Referência direta de domínio e dataset; resultado não comparável numericamente neste relatório |
+| Kim (2014) | Datasets de classificação de sentenças em inglês | CNN para texto | Acurácia | Referência arquitetural; resultado não comparável diretamente ao dataset Fake Reviews PT-BR |
+| Souza et al. (2020) | Corpora de pré-treinamento em português brasileiro | BERTimbau | Métricas de tarefas posteriores de PLN | Referência contextual para extensão futura; não avaliado neste experimento |
+| Este trabalho | Fake Reviews PT-BR | CNN 1D PyTorch | F1 macro e AUC-ROC da classe falsa/sintética | F1 macro de 0,962658 e AUC-ROC de 0,991639 |
 ## 11. Conclusão
 
 Este trabalho apresentou um experimento completo para classificação de reviews falsas/sintéticas em português brasileiro usando uma CNN 1D em PyTorch. O pipeline incluiu carregamento do dataset, limpeza mínima, análise exploratória, divisão estratificada, treinamento de baselines, treinamento do modelo neural, avaliação quantitativa e análise qualitativa de erros.
 
-A CNN 1D superou os baselines avaliados, atingindo 0,949544 de acurácia e 0,949544 de F1 macro. Esses resultados indicam que uma arquitetura convolucional simples pode ser competitiva para a classificação textual neste dataset. Contudo, as conclusões devem permanecer restritas ao escopo do experimento: o modelo distingue avaliações genuínas de avaliações sintéticas geradas no dataset, mas não comprova detecção de fraude humana nem de astroturfing completo.
+A CNN 1D superou os baselines avaliados, atingindo 0,962658 de acurácia e 0,962658 de F1 macro. Esses resultados indicam que uma arquitetura convolucional simples pode ser competitiva para a classificação textual neste dataset. Contudo, as conclusões devem permanecer restritas ao escopo do experimento: o modelo distingue avaliações genuínas de avaliações sintéticas geradas no dataset, mas não comprova detecção de fraude humana nem de astroturfing completo.
 
 Como continuidade, o projeto pode ser reaproveitado em um Trabalho de Conclusão de Curso como pipeline experimental reutilizável, como etapa intermediária entre modelos TF-IDF e BERTimbau, e como base para discussão de ameaças à validade. Trabalhos futuros podem incluir comparação com BERTimbau, CNN multi-kernel, validação cruzada, deduplicação antes da divisão dos dados e uso de metadados comportamentais ou grafos quando houver dados apropriados.
 
 ## 12. Declaração de Uso de IA Generativa
 
-Ferramentas de IA generativa foram utilizadas como apoio na estruturação do código, na organização da documentação, na revisão textual e na diagramação dos artefatos finais. As métricas, tabelas e figuras apresentadas neste relatório foram geradas pelo experimento executado no projeto, a partir dos arquivos reais produzidos pelo pipeline.
+Foi utilizada ferramenta de IA generativa, como ChatGPT/Codex, como apoio na organização textual, revisão de clareza e estruturação do relatório. As métricas, tabelas e figuras apresentadas neste relatório foram geradas pelo experimento executado no projeto, a partir dos arquivos reais produzidos pelo pipeline.
 
 ## 13. Referências
 

@@ -156,18 +156,18 @@ Os resultados abaixo foram gerados pelo pipeline real e estao em
 
 | Modelo | Accuracy | Precision fake label 0 | Recall fake label 0 | F1 fake label 0 | F1 macro | AUC-ROC fake label 0 |
 |---|---:|---:|---:|---:|---:|---:|
-| TF-IDF + Regressao Logistica | 0.885086 | 0.866385 | 0.910667 | 0.887974 | 0.885009 | 0.949770 |
-| TF-IDF + SVM Linear | 0.897533 | 0.882428 | 0.917333 | 0.899542 | 0.897492 | 0.962379 |
-| CNN 1D PyTorch | 0.949544 | 0.950557 | 0.948444 | 0.949499 | 0.949544 | 0.987807 |
+| TF-IDF + Regressao Logistica | 0.881085 | 0.867553 | 0.899556 | 0.883264 | 0.881043 | 0.949981 |
+| TF-IDF + SVM Linear | 0.894421 | 0.886037 | 0.905333 | 0.895581 | 0.894408 | 0.959195 |
+| CNN 1D PyTorch | 0.962658 | 0.963078 | 0.962222 | 0.962650 | 0.962658 | 0.991639 |
 
 Leituras principais:
 
 - A CNN 1D PyTorch teve o melhor desempenho geral.
 - Entre os baselines classicos, o SVM linear superou a regressao logistica.
-- A CNN teve ganho de aproximadamente 5,2 pontos percentuais de acuracia em
+- A CNN teve ganho de aproximadamente 6,8 pontos percentuais de acuracia em
   relacao ao SVM linear.
-- A CNN atingiu F1 macro de aproximadamente 94,95%.
-- A AUC-ROC da CNN para a classe falsa/sintetica foi aproximadamente 98,78%.
+- A CNN atingiu F1 macro de aproximadamente 96,27%.
+- A AUC-ROC da CNN para a classe falsa/sintetica foi aproximadamente 99,16%.
 - A alta AUC sugere boa separacao entre reviews sinteticas e genuinas no
   dataset avaliado.
 

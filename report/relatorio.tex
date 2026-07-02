@@ -14,10 +14,19 @@
 \usepackage{float}
 \usepackage{caption}
 \usepackage{xurl}
-\usepackage{listings}
 \usepackage{microtype}
+\usepackage{tabularx}
+\usepackage{makecell}
+\usepackage{ragged2e}
+\usepackage{adjustbox}
 \usepackage[hidelinks]{hyperref}
+\urlstyle{same}
 \usepackage[alf]{abntex2cite}
+
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}m{#1}}
+\newcolumntype{C}[1]{>{\Centering\arraybackslash}m{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\renewcommand{\tabularxcolumn}[1]{m{#1}}
 
 \geometry{left=3cm,top=3cm,right=2cm,bottom=2cm}
 \onehalfspacing
@@ -28,14 +37,6 @@
 
 \captionsetup{font=small,labelfont=bf,justification=centering}
 
-\lstset{
-  basicstyle=\ttfamily\small,
-  breaklines=true,
-  columns=fullflexible,
-  frame=single,
-  keepspaces=true,
-  showstringspaces=false
-}
 
 \newcommand{\fontefig}{\par\smallskip\footnotesize Fonte: elaborado pelo autor com base nos resultados do experimento.}
 
@@ -79,7 +80,7 @@ A escolha da CNN 1D é motivada pela capacidade desse tipo de arquitetura de cap
 
 O conjunto de dados utilizado neste trabalho foi o \textit{Fake Reviews PT-BR Dataset}, disponibilizado publicamente por \citeonline{borges2025benchmark} e por seu repositório de dados \cite{borges2025dataset}. Esse corpus foi construído a partir de avaliações genuínas extraídas da base pública \textit{Brazilian E-Commerce Public Dataset by Olist} \cite{olist2018dataset} e de avaliações falsas/sintéticas geradas por GPT-2 em português brasileiro. O dataset utilizado no experimento contém avaliações textuais, categorias de produtos e rótulos binários associados à distinção entre reviews genuínas e falsas/sintéticas.
 
-O repositório público do \textit{Fake Reviews PT-BR Dataset} está disponível em \url{https://github.com/cristianomg10/fake-reviews-ptbr-dataset}. A base original Olist está disponível em \url{https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce}. No experimento, foi utilizado o arquivo \texttt{true\_fake\_dataset\_top15.csv}, contendo as colunas descritas na Tabela~\ref{tab:campos-dataset}.
+O repositório público do \textit{Fake Reviews PT-BR Dataset} está disponível em \url{https://github.com/cristianomg10/fake-reviews-ptbr-dataset}. A base original Olist está disponível em \url{https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce}. No experimento, foi utilizado o corpus textual disponibilizado, contendo os campos lógicos descritos na Tabela~\ref{tab:campos-dataset}.
 
 \begin{table}[H]
 \centering
@@ -89,9 +90,9 @@ O repositório público do \textit{Fake Reviews PT-BR Dataset} está disponível
 \toprule
 Campo lógico & Nome da coluna & Descrição \\
 \midrule
-Texto da avaliação & \texttt{review\_comment\_message} & Conteúdo textual da review \\
-Categoria & \texttt{product\_category\_name} & Categoria do produto \\
-Rótulo & \texttt{label} & 0 para falsa/sintética; 1 para genuína \\
+Texto da avaliação & \textit{review\_comment\_message} & Conteúdo textual da review \\
+Categoria & \textit{product\_category\_name} & Categoria do produto \\
+Rótulo & \textit{label} & 0 para falsa/sintética; 1 para genuína \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -106,16 +107,18 @@ em que \(T\) corresponde ao tamanho da sequência textual e \(x_t\) representa o
 
 \begin{table}[H]
 \centering
+\renewcommand{\arraystretch}{1.25}
 \caption{Exemplos curtos de avaliações do dataset}
 \label{tab:exemplos-dataset}
-\begin{tabular}{p{3.7cm}p{3.2cm}p{7cm}}
+\begin{tabularx}{\textwidth}{@{} L{3.5cm} L{3.2cm} Y @{}}
 \toprule
-Classe & Categoria & Exemplo curto \\
+\makecell[c]{\textbf{Classe}} & \makecell[c]{\textbf{Categoria}} & \makecell[c]{\textbf{Exemplo curto}} \\
 \midrule
-0 - falsa/sintética & \texttt{garden\_tools} & ``Demorou um pouco pra chegar, mas fiquei feliz com a compra...'' \\
-1 - genuína & \texttt{health\_beauty} & ``Sempre comprei neste site e nunca tive qualquer problema...'' \\
+0 - falsa/sintética & garden\_tools & ``Demorou um pouco pra chegar, mas fiquei feliz com a compra...'' \\
+\addlinespace
+1 - genuína & health\_beauty & ``Sempre comprei neste site e nunca tive qualquer problema...'' \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \begin{figure}[H]
@@ -168,53 +171,51 @@ A principal limitação conceitual do dataset está relacionada à natureza da c
 
 O método implementado segue um pipeline textual composto pelas seguintes etapas: texto da avaliação, tokenização, padding ou truncamento, embedding treinável, convolução unidimensional, função de ativação ReLU, Global Max Pooling, dropout, camada linear e saída binária. A camada de embedding converte tokens discretos em vetores densos. A convolução unidimensional aplica filtros locais sobre a sequência, buscando padrões curtos de palavras. A função ReLU introduz não linearidade ao modelo, enquanto o Global Max Pooling seleciona os sinais mais intensos detectados pelos filtros.
 
-O dropout foi utilizado como mecanismo de regularização para reduzir overfitting. A camada linear final gera um logit, que é usado diretamente pela função \texttt{BCEWithLogitsLoss} durante o treinamento. Essa função combina a sigmoid e a entropia cruzada binária de forma numericamente estável. Na avaliação, a sigmoid é aplicada ao logit para obter a probabilidade associada à classe genuína, e a probabilidade da classe falsa/sintética é calculada de forma complementar. A otimização foi feita com Adam, e o treinamento utilizou early stopping para interromper a execução quando a validação deixava de melhorar.
+O dropout foi utilizado como mecanismo de regularização para reduzir overfitting. A camada linear final gera um logit, que é usado diretamente pela função BCEWithLogitsLoss durante o treinamento. Essa função combina a sigmoid e a entropia cruzada binária de forma numericamente estável. Na avaliação, a sigmoid é aplicada ao logit para obter a probabilidade associada à classe genuína, e a probabilidade da classe falsa/sintética é calculada de forma complementar. A otimização foi feita com Adam, e o treinamento utilizou early stopping para interromper a execução quando a validação deixava de melhorar.
 
 
 \begin{table}[H]
 \centering
+\renewcommand{\arraystretch}{1.25}
 \caption{Arquitetura da CNN 1D implementada}
 \label{tab:arquitetura-cnn}
-\begin{tabular}{p{3.4cm}p{5.2cm}p{6.1cm}}
+\begin{tabularx}{\textwidth}{@{} L{4.5cm} Y L{5.5cm} @{}}
 \toprule
-Camada & Configuração & Função \\
+\makecell[c]{\textbf{Camada}} & \makecell[c]{\textbf{Configuração}} & \makecell[c]{\textbf{Função}} \\
 \midrule
-Embedding & \texttt{vocab\_size=20000}, \texttt{embedding\_dim=128}, \texttt{padding\_idx=0} & Representar tokens como vetores densos \\
-Conv1D & \texttt{filters=128}, \texttt{kernel\_size=5} & Capturar padrões locais da sequência textual \\
-ReLU & -- & Introduzir não linearidade \\
-Global Max Pooling & -- & Selecionar ativações mais relevantes \\
-Dropout & \texttt{p=0.5} & Reduzir overfitting \\
-Linear & \texttt{128 -> 1} & Gerar logit da classificação binária \\
-Sigmoid na avaliação & -- & Converter logit em probabilidade \\
+Embedding & vocab\_size=20000;\newline embedding\_dim=128;\newline padding\_idx=0 & Representar tokens como vetores densos \\
+\addlinespace
+Conv1D & 128 filtros;\newline kernel\_size=5 & Capturar padrões locais da sequência textual \\
+\addlinespace
+ReLU & sem parâmetros treináveis & Introduzir não linearidade \\
+\addlinespace
+Global Max Pooling & agregação máxima global na sequência & Selecionar ativações mais relevantes \\
+\addlinespace
+Dropout & p=0.5 & Reduzir overfitting \\
+\addlinespace
+Linear & 128 $\rightarrow$ 1 & Gerar logit da classificação binária \\
+\addlinespace
+Sigmoid na avaliação & aplicada após a saída linear & Converter logit em probabilidade \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
-No método \texttt{forward}, a sequência de índices passa inicialmente pela camada de embedding, produzindo uma matriz com um vetor denso por token. Em seguida, essa matriz é transposta para o formato esperado pela convolução unidimensional, com os canais correspondendo às dimensões do embedding. A convolução e a ReLU produzem mapas de ativação ao longo da sequência; o Global Max Pooling seleciona, para cada filtro, a ativação máxima observada. O vetor resultante passa pelo dropout e pela camada linear, que retorna um único logit por avaliação.
+Cabe destacar que nem todas as operações da arquitetura possuem parâmetros treináveis. Camadas como ReLU e Global Max Pooling consistem em operações fixas, enquanto a Sigmoid atua apenas como uma transformação matemática na saída durante a fase de inferência.
 
-O Trecho~\ref{lst:cnn} apresenta a definição das principais camadas da CNN 1D, agora consolidada em \texttt{notebooks/01\_experimento\_fake\_reviews.ipynb}.
 
-\begin{lstlisting}[language=Python,caption={Definição das principais camadas da CNN 1D},label={lst:cnn}]
-self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=0)
-self.conv = nn.Conv1d(
-    in_channels=embedding_dim,
-    out_channels=filters,
-    kernel_size=kernel_size,
-)
-self.relu = nn.ReLU()
-self.dropout = nn.Dropout(dropout)
-self.classifier = nn.Linear(filters, 1)
-\end{lstlisting}
+No método forward, a sequência de índices passa inicialmente pela camada de embedding, produzindo uma matriz com um vetor denso por token. Em seguida, essa matriz é transposta para o formato esperado pela convolução unidimensional, com os canais correspondendo às dimensões do embedding. A convolução e a ReLU produzem mapas de ativação ao longo da sequência; o Global Max Pooling seleciona, para cada filtro, a ativação máxima observada. O vetor resultante passa pelo dropout e pela camada linear, que retorna um único logit por avaliação. As principais camadas da arquitetura foram instanciadas utilizando os módulos nativos padrão do ambiente PyTorch.
 
 \section{Configuração Experimental}
 
 O experimento foi desenvolvido em Python. A implementação da CNN 1D foi realizada com PyTorch, enquanto os modelos de referência foram treinados com scikit-learn. As bibliotecas pandas e numpy foram utilizadas para manipulação dos dados, e matplotlib e seaborn foram empregadas na geração dos gráficos.
 
-O código-fonte, as instruções de reprodução e a descrição das dependências estão disponíveis no repositório do projeto e no arquivo \texttt{README.md}. A entrega inclui o relatório em PDF, o código-fonte no GitHub, o README com instruções, os slides da apresentação e a referência ao dataset utilizado. O repositório do projeto está disponível em \url{https://github.com/Altaeir-13/Indago-PT-Detecting-Synthetic-Reviews-in-Brazilian-Portuguese}. A reprodução completa está documentada no \texttt{README.md}, incluindo instalação das dependências, posicionamento do dataset, execução do experimento, smoke test e descrição dos arquivos gerados em \texttt{outputs/}.
+O código-fonte, as instruções de reprodução e a descrição das dependências estão disponíveis no repositório do projeto na documentação principal. A entrega inclui o relatório final, o código-fonte no GitHub, os slides da apresentação e a referência ao dataset utilizado. O repositório do projeto está disponível em \url{https://github.com/Altaeir-13/Indago-PT-Detecting-Synthetic-Reviews-in-Brazilian-Portuguese}. A reprodução completa está documentada no repositório, incluindo instalação das dependências, posicionamento do dataset, execução do procedimento experimental e descrição dos artefatos gerados.
 
-A divisão dos dados foi estratificada em treino, validação e teste, nas proporções de 70\%, 15\% e 15\%, respectivamente, com \texttt{random\_state} igual a 42. Os modelos avaliados foram TF-IDF com Regressão Logística, TF-IDF com SVM Linear e CNN 1D em PyTorch. As métricas foram calculadas no conjunto de teste.
+A divisão dos dados foi estratificada em treino, validação e teste, nas proporções de 70\%, 15\% e 15\%, respectivamente, com random\_state igual a 42. Os modelos avaliados foram TF-IDF com Regressão Logística, TF-IDF com SVM Linear e CNN 1D em PyTorch. As métricas foram calculadas no conjunto de teste.
 
 \subsection{Ambiente de execução}
+
+O experimento foi executado localmente com aceleração por GPU, utilizando uma NVIDIA GeForce RTX 3060 Ti. No ambiente Python utilizado, o PyTorch 2.11.0+cu128 reconheceu CUDA 12.8 e selecionou o dispositivo cuda para o treinamento da CNN 1D.
 
 \begin{table}[H]
 \centering
@@ -229,13 +230,13 @@ Python & 3.14.5 \\
 PyTorch & 2.11.0+cu128 \\
 scikit-learn & 1.9.0 \\
 pandas & 3.0.3 \\
-numpy & 2.4.6 \\
-matplotlib & 3.10.9 \\
+numpy & 2.5.0 \\
+matplotlib & 3.11.0 \\
 seaborn & 0.13.2 \\
-GPU detectada via CUDA & Não \\
-Modelo da GPU & Não aplicável \\
-\texttt{torch.cuda.is\_available()} & \texttt{False} \\
-Dispositivo utilizado no treinamento & \texttt{cpu} \\
+GPU detectada via CUDA & Sim \\
+Modelo da GPU & NVIDIA GeForce RTX 3060 Ti \\
+torch.cuda.is\_available() & True \\
+Dispositivo utilizado no treinamento & cuda \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -249,19 +250,19 @@ Dispositivo utilizado no treinamento & \texttt{cpu} \\
 \toprule
 Parâmetro & Valor \\
 \midrule
-\texttt{vocab\_size} & 20000 \\
-\texttt{max\_len} & 128 \\
-\texttt{embedding\_dim} & 128 \\
-\texttt{filters} & 128 \\
-\texttt{kernel\_size} & 5 \\
-\texttt{dropout} & 0.5 \\
-\texttt{lr} & 0.001 \\
-\texttt{batch\_size} & 64 \\
-\texttt{epochs} & 30 \\
-\texttt{patience} & 4 \\
-\texttt{loss} & \texttt{BCEWithLogitsLoss} \\
-\texttt{optimizer} & Adam \\
-\texttt{random\_state} & 42 \\
+vocab\_size & 20000 \\
+max\_len & 128 \\
+embedding\_dim & 128 \\
+filters & 128 \\
+kernel\_size & 5 \\
+dropout & 0.5 \\
+lr & 0.001 \\
+batch\_size & 64 \\
+epochs & 30 \\
+patience & 4 \\
+loss & BCEWithLogitsLoss \\
+optimizer & Adam \\
+random\_state & 42 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -270,17 +271,20 @@ Neste experimento, foi adotada uma configuração única de hiperparâmetros, de
 
 \begin{table}[H]
 \centering
+\renewcommand{\arraystretch}{1.25}
 \caption{Modelos avaliados no experimento}
 \label{tab:modelos}
-\begin{tabular}{@{}p{4.2cm}p{4.2cm}p{6.2cm}@{}}
+\begin{tabularx}{\textwidth}{@{} L{4.8cm} Y Y @{}}
 \toprule
-Modelo & Representação & Finalidade \\
+\makecell[c]{\textbf{Modelo}} & \makecell[c]{\textbf{Representação}} & \makecell[c]{\textbf{Finalidade}} \\
 \midrule
 TF-IDF + Regressão Logística & TF-IDF & Baseline linear probabilístico \\
+\addlinespace
 TF-IDF + SVM Linear & TF-IDF & Baseline linear de margem \\
+\addlinespace
 CNN 1D PyTorch & Tokens e embedding treinável & Modelo principal de deep learning \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 Foram utilizadas as seguintes métricas: acurácia, precisão para a classe falsa/sintética, recall para a classe falsa/sintética, F1-score para a classe falsa/sintética, F1 macro, AUC-ROC orientada para a classe 0 e matriz de confusão. A classe de interesse foi definida como label 0, pois representa a avaliação falsa/sintética.
@@ -291,21 +295,25 @@ A Tabela~\ref{tab:resultados} apresenta os resultados reais do experimento no co
 
 \begin{table}[H]
 \centering
+\renewcommand{\arraystretch}{1.25}
 \caption{Resultados quantitativos no conjunto de teste}
 \label{tab:resultados}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lrrrrrr}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{@{} l *{6}{c} @{}}
 \toprule
-Modelo & Accuracy & Precision 0 & Recall 0 & F1 0 & F1 macro & AUC-ROC 0 \\
+\makecell[c]{\textbf{Modelo}} & \makecell[c]{\textbf{Accuracy}} & \makecell[c]{\textbf{Precision 0}} & \makecell[c]{\textbf{Recall 0}} & \makecell[c]{\textbf{F1 0}} & \makecell[c]{\textbf{F1 macro}} & \makecell[c]{\textbf{AUC-ROC 0}} \\
 \midrule
 TF-IDF + Regressão Logística & 0.881085 & 0.867553 & 0.899556 & 0.883264 & 0.881043 & 0.949981 \\
-TF-IDF + SVM Linear & 0.894421 & 0.886037 & 0.905333 & 0.895581 & 0.894408 & 0.959195 \\
-CNN 1D PyTorch & 0.958880 & 0.965719 & 0.951556 & 0.958585 & 0.958878 & 0.990750 \\
+\addlinespace
+TF-IDF + SVM Linear          & 0.894421 & 0.886037 & 0.905333 & 0.895581 & 0.894408 & 0.959195 \\
+\addlinespace
+CNN 1D PyTorch               & 0.962658 & 0.963078 & 0.962222 & 0.962650 & 0.962658 & 0.991639 \\
 \bottomrule
-\end{tabular}}
+\end{tabular}
+\end{adjustbox}
 \end{table}
 
-A CNN 1D atingiu 0,958880 de acurácia, 0,958585 de F1-score para a classe falsa/sintética, 0,958878 de F1 macro e 0,990750 de AUC-ROC orientada para a classe 0. Entre os baselines, o SVM Linear apresentou desempenho superior ao da Regressão Logística.
+A CNN 1D atingiu 0,962658 de acurácia, 0,962650 de F1-score para a classe falsa/sintética, 0,962658 de F1 macro e 0,991639 de AUC-ROC orientada para a classe 0. Entre os baselines, o SVM Linear apresentou desempenho superior ao da Regressão Logística.
 
 \begin{figure}[H]
 \centering
@@ -330,11 +338,11 @@ A CNN 1D atingiu 0,958880 de acurácia, 0,958585 de F1-score para a classe falsa
 
 \section{Análise e Discussão}
 
-A CNN 1D apresentou o melhor desempenho geral do experimento. Em comparação com o SVM Linear, a CNN obteve ganho aproximado de 6,4 pontos percentuais de acurácia. Esse resultado sugere que o uso de embeddings treináveis e filtros convolucionais foi eficaz para capturar padrões locais relevantes nas avaliações textuais.
+A CNN 1D apresentou o melhor desempenho geral do experimento. Em comparação com o SVM Linear, a CNN obteve ganho aproximado de 6,8 pontos percentuais de acurácia. Esse resultado sugere que o uso de embeddings treináveis e filtros convolucionais foi eficaz para capturar padrões locais relevantes nas avaliações textuais.
 
 O SVM Linear foi o baseline clássico mais forte, indicando que representações TF-IDF continuam competitivas em tarefas de classificação textual. A Regressão Logística também apresentou desempenho consistente, mas inferior ao SVM Linear e à CNN 1D.
 
-A AUC-ROC elevada da CNN, aproximadamente 99,08\%, indica boa separação entre reviews sintéticas e genuínas no conjunto de teste. O F1 macro da CNN foi aproximadamente 95,89\%, sugerindo desempenho equilibrado entre as classes. As curvas de treinamento e validação indicam que o modelo aprendeu padrões relevantes do conjunto de treino sem apresentar sinais fortes de underfitting. A menor perda de validação ocorreu na época 7; depois disso, a perda de treino continuou diminuindo, enquanto a perda de validação oscilou e aumentou levemente. Essa diferença sugere possibilidade de overfitting leve, controlado parcialmente pelo uso de dropout e early stopping. O treinamento foi encerrado na época 11, após quatro épocas sem melhora suficiente na perda de validação, e o melhor checkpoint foi escolhido com base na perda de validação. A matriz de confusão da CNN reforça a interpretação de que o modelo apresentou desempenho equilibrado entre as classes.
+A AUC-ROC elevada da CNN, aproximadamente 99,16\%, indica boa separação entre reviews sintéticas e genuínas no conjunto de teste. O F1 macro da CNN foi aproximadamente 96,27\%, sugerindo desempenho equilibrado entre as classes. As curvas de treinamento e validação indicam que o modelo aprendeu padrões relevantes do conjunto de treino sem apresentar sinais fortes de underfitting. A menor perda de validação ocorreu na época 7; depois disso, a perda de treino continuou diminuindo, enquanto a perda de validação oscilou e aumentou levemente. Essa diferença sugere possibilidade de overfitting leve, controlado parcialmente pelo uso de dropout e early stopping. O treinamento foi encerrado na época 11, após quatro épocas sem melhora suficiente na perda de validação, e o melhor checkpoint foi escolhido com base na perda de validação. A matriz de confusão da CNN reforça a interpretação de que o modelo apresentou desempenho equilibrado entre as classes.
 
 Apesar dos resultados positivos, a interpretação deve ser cautelosa. A classe falsa foi gerada por GPT-2, o que significa que o modelo pode ter aprendido padrões específicos do gerador ou do processo de construção do dataset. Assim, os resultados não devem ser interpretados como detecção de fraude humana real ou de astroturfing completo.
 
@@ -358,21 +366,23 @@ A análise qualitativa de erros foi realizada a partir das predições da CNN 1D
 
 \begin{table}[H]
 \centering
+\renewcommand{\arraystretch}{1.25}
 \caption{Exemplos curtos de erros da CNN 1D}
 \label{tab:erros}
-\begin{tabular}{p{3.5cm}p{4.2cm}p{6.5cm}}
+\begin{tabularx}{\textwidth}{@{} l L{4cm} Y @{}}
 \toprule
-Tipo de erro & Interpretação & Exemplo curto \\
+\makecell[c]{\textbf{Tipo de erro}} & \makecell[c]{\textbf{Interpretação}} & \makecell[c]{\textbf{Exemplo curto}} \\
 \midrule
 Falso positivo & Genuína predita como falsa/sintética & ``Ainda é cedo para avaliar o produto.'' \\
+\addlinespace
 Falso negativo & Falsa/sintética predita como genuína & ``Não gostei dos travesseiros... prazo de entrega é muito longo...'' \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 Esses casos sugerem que avaliações muito curtas, genéricas, padronizadas ou com poucos detalhes concretos podem ficar próximas da fronteira de decisão do modelo. Também é possível que alguns textos sintéticos imitem padrões reais das avaliações da Olist, dificultando a separação exclusivamente com base em características textuais.
 
-O pipeline atual salva os exemplos incorretamente classificados em \path{outputs/tables/cnn_error_analysis.csv}. A inclusão sistemática de exemplos corretamente classificados é uma melhoria futura de documentação.
+A análise registra os exemplos incorretamente classificados para revisão posterior. A inclusão sistemática de exemplos corretamente classificados é uma melhoria futura de documentação.
 
 \section{Comparação com Trabalhos Relacionados}
 
@@ -380,35 +390,40 @@ A comparação com a literatura deve considerar que os protocolos, conjuntos de 
 
 Quando a métrica não é diretamente comparável ou não foi extraída do material consultado, a comparação é feita de forma qualitativa.
 
+\citeonline{borges2025benchmark} avaliaram modelos clássicos e/ou contextuais para fake reviews em português brasileiro. Embora os protocolos não tenham sido reproduzidos integralmente, o trabalho é usado como referência direta de domínio e dataset. Neste relatório, a comparação numérica é limitada porque os resultados do artigo não foram reproduzidos sob o mesmo split e configuração experimental.
+
 \begin{table}[H]
 \centering
-\caption{Comparação qualitativa com trabalhos relacionados}
+\renewcommand{\arraystretch}{1.25}
+\caption{Comparação objetiva com trabalhos relacionados}
 \label{tab:comparacao}
 \footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}p{2.2cm}p{2.0cm}p{2.2cm}p{2.0cm}p{3.0cm}p{3.0cm}@{}}
+\begin{tabularx}{\textwidth}{@{} L{3.2cm} L{3.2cm} L{3.1cm} L{3.1cm} Y @{}}
 \toprule
-Trabalho & Dataset & Modelo & Métrica principal & Resultado & Relação com este trabalho \\
+\makecell[c]{\textbf{Trabalho}} & \makecell[c]{\textbf{Dataset}} & \makecell[c]{\textbf{Modelo}} & \makecell[c]{\textbf{Métrica principal}} & \makecell[c]{\textbf{Resultado}} \\
 \midrule
-\citeonline{borges2025benchmark} & Fake Reviews PT-BR & Modelos clássicos e contextuais & Benchmark & Métrica não extraída do material local consultado & Referência direta de domínio e dataset \\
-\citeonline{kim2014cnn} & Sentenças em inglês & CNN para texto & Acurácia & Não comparável diretamente a este dataset & Referência arquitetural para CNN em texto \\
-\citeonline{souza2020bertimbau} & Corpora em português & BERTimbau & Modelo pré-treinado & Não é resultado neste dataset & Referência contextual para português brasileiro e extensão futura \\
-Este trabalho & Fake Reviews PT-BR & CNN 1D PyTorch & F1 macro e AUC-ROC & F1 macro 0,958878; AUC 0,990750 & Implementação principal avaliada neste relatório \\
+\citeonline{borges2025benchmark} & Fake Reviews PT-BR & Modelos clássicos e contextuais & Benchmark de classificação; métrica numérica não extraída do material local consultado & Referência direta de domínio e dataset; resultado não comparável numericamente neste relatório \\
+\addlinespace
+\citeonline{kim2014cnn} & Datasets de classificação de sentenças em inglês & CNN para texto & Acurácia & Referência arquitetural; resultado não comparável diretamente ao dataset Fake Reviews PT-BR \\
+\addlinespace
+\citeonline{souza2020bertimbau} & Corpora de pré-treinamento em português brasileiro & BERTimbau & Métricas de tarefas posteriores de PLN & Referência contextual para extensão futura; não avaliado neste experimento \\
+\addlinespace
+Este trabalho & Fake Reviews PT-BR & CNN 1D PyTorch & F1 macro e AUC-ROC da classe falsa/sintética & F1 macro de 0,962658 e AUC-ROC de 0,991639 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \section{Conclusão}
 
 Este trabalho apresentou um experimento completo para classificação de reviews falsas/sintéticas em português brasileiro usando uma CNN 1D em PyTorch. O pipeline incluiu carregamento do dataset, limpeza mínima, análise exploratória, divisão estratificada, treinamento de baselines, treinamento do modelo neural, avaliação quantitativa e análise qualitativa de erros.
 
-A CNN 1D superou os baselines avaliados, atingindo 0,958880 de acurácia e 0,958878 de F1 macro. Esses resultados indicam que uma arquitetura convolucional simples pode ser competitiva para a classificação textual neste dataset. Contudo, as conclusões devem permanecer restritas ao escopo do experimento: o modelo distingue avaliações genuínas de avaliações sintéticas geradas no dataset, mas não comprova detecção de fraude humana nem de astroturfing completo.
+A CNN 1D superou os baselines avaliados, atingindo 0,962658 de acurácia e 0,962658 de F1 macro. Esses resultados indicam que uma arquitetura convolucional simples pode ser competitiva para a classificação textual neste dataset. Contudo, as conclusões devem permanecer restritas ao escopo do experimento: o modelo distingue avaliações genuínas de avaliações sintéticas geradas no dataset, mas não comprova detecção de fraude humana nem de astroturfing completo.
 
 Como continuidade, o projeto pode ser reaproveitado em um Trabalho de Conclusão de Curso como pipeline experimental reutilizável, como etapa intermediária entre modelos TF-IDF e BERTimbau, e como base para discussão de ameaças à validade. Trabalhos futuros podem incluir comparação com BERTimbau, CNN multi-kernel, validação cruzada, deduplicação antes da divisão dos dados e uso de metadados comportamentais ou grafos quando houver dados apropriados.
 
 \section{Declaração de Uso de IA Generativa}
 
-Ferramentas de IA generativa, incluindo ChatGPT/Codex, foram utilizadas como apoio na organização textual do relatório, revisão de clareza, estruturação de trechos explicativos e auxílio na organização do código. Os experimentos, métricas, tabelas e gráficos apresentados foram obtidos por execução local do código-fonte do projeto. A correção das informações foi verificada por inspeção do código, conferência dos arquivos gerados em \texttt{outputs/}, comparação entre tabelas de métricas e saídas do experimento, além de revisão manual do texto final. O autor assume responsabilidade pela implementação, análise, resultados e conteúdo final apresentado.
+Foi utilizada ferramenta de IA generativa, como ChatGPT/Codex, como apoio na organização textual, revisão de clareza e estruturação do relatório. Os experimentos, métricas, tabelas e gráficos apresentados foram obtidos por execução local do código-fonte do projeto. A correção das informações foi verificada por inspeção do código, conferência dos resultados gerados, comparação entre tabelas de métricas e saídas dos experimentos, além de revisão manual do texto final. O autor assume responsabilidade pela implementação, análise dos resultados e conteúdo final apresentado.
 
 \bibliography{referencias}
 

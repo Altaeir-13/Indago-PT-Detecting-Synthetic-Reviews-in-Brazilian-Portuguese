@@ -147,10 +147,10 @@ roc_auc_score(y_true == 0, score_label_0)
 |---|---:|---:|---:|---:|---:|---:|
 | TF-IDF + Regressao Logistica | 0.881085 | 0.867553 | 0.899556 | 0.883264 | 0.881043 | 0.949981 |
 | TF-IDF + SVM Linear | 0.894421 | 0.886037 | 0.905333 | 0.895581 | 0.894408 | 0.959195 |
-| CNN 1D PyTorch | 0.958880 | 0.965719 | 0.951556 | 0.958585 | 0.958878 | 0.990750 |
+| CNN 1D PyTorch | 0.962658 | 0.963078 | 0.962222 | 0.962650 | 0.962658 | 0.991639 |
 
-- CNN: 95,89% de acuracia, 95,89% de F1 macro e 99,08% de AUC-ROC.
-- Ganho aproximado sobre o SVM linear: 6,4 pontos percentuais de acuracia.
+- CNN: 96,27% de acuracia, 96,27% de F1 macro e 99,16% de AUC-ROC.
+- Ganho aproximado sobre o SVM linear: 6,8 pontos percentuais de acuracia.
 
 ## Slide 13 - Curvas de treino e matriz de confusao
 
