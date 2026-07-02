@@ -1,21 +1,21 @@
 error_type,category,label,prediction,prob_or_score_fake_label_0,text
-false_positive_genuine_predicted_fake,housewares,1,0,0.9429188370704651,"Muito ruim ... Comprei 02 Kits e foi entregue somente 1 Kit de cabide, porém, no rastreamento constam que foram entregues os 2 produtos e não consegui contato com o vendedor targaryen"
-false_positive_genuine_predicted_fake,perfumery,1,0,0.6387895345687866,Comprei dois kit para maquiagem chegou apenas um. Recomendo muito sempre comprei nas lannister sempre chegou certo primeira vez que não veio certo
-false_positive_genuine_predicted_fake,telephony,1,0,0.5261813402175903,Produto correspondeu à expectativa. Entrega antes do prazo previsto.
-false_positive_genuine_predicted_fake,electronics,1,0,0.8750540018081665,"ainda não entregaram meu produto, apenas o outros que avia comprado junto, mas o cabo HDMI NÃO foi entregue"
-false_positive_genuine_predicted_fake,sports_leisure,1,0,0.9013449549674988,"Comprei 2 produtos e recebi apenas 1 e até agora ainda não recebi o outro e consta como entregue, pois só veio um código de rastreio"
-false_positive_genuine_predicted_fake,auto,1,0,0.5921430587768555,"O produto foi enviado rapidamente, e os correios milagrosamente entregaram rápido. A caixa veio com leves amassados e arranhões, mas nada que tenha chegado ao produto."
-false_positive_genuine_predicted_fake,garden_tools,1,0,0.9662635922431946,"Não me enviaram o produto, alegando que não o tinha no estoque. Não recebi o dinheiro de volta"
-false_positive_genuine_predicted_fake,telephony,1,0,0.6543742418289185,Passou do prazo e ainda não recebi o meu produto. Não recomendo
-false_positive_genuine_predicted_fake,garden_tools,1,0,0.824238657951355,"Entrega super rápido, produto veio bem embalado, vou instalar amanha. Muito bom."
-false_positive_genuine_predicted_fake,cool_stuff,1,0,0.5010939240455627,Amei a bolsa. Recebi no prazo combinado
-false_negative_fake_predicted_genuine,telephony,0,1,0.09953296184539795,"EU DEVERIA TER COMPRADO DOIS OUTRO PRODUTO, E CHEGOU 1,40 E O PRODUTO CHEGOU 1,40."
-false_negative_fake_predicted_genuine,baby,0,1,0.2754611372947693,"Gostei bastante do tecido, bem acabado, material de boa qualidade e de boa qualidade. Por enquanto não fazem"
-false_negative_fake_predicted_genuine,baby,0,1,0.24260729551315308,Ainda estou aguardando a entrega do produto.
-false_negative_fake_predicted_genuine,electronics,0,1,0.1694037914276123,"O produto funciona bem, é de boa qualidade e tudo certo. O produto é bem resistente e com boa qualidade."
-false_negative_fake_predicted_genuine,auto,0,1,0.3689573407173157,"Desde o pedido até a data da entrega, o produto não chegou, e as duas agências de entrega só"
-false_negative_fake_predicted_genuine,housewares,0,1,0.03420442342758179,Não recebi até hoje o produto.Só acho que tenho que trocar o produto por um outro material.Vocês estão tentando
-false_negative_fake_predicted_genuine,bed_bath_table,0,1,0.38319021463394165,Não recebido produto ainda. Tudo ok.Recebi o produto em perfeito estado. Mas veio a caixa amassada.
-false_negative_fake_predicted_genuine,baby,0,1,0.36126255989074707,Comprei 2 bonecos desse de maio e só recebi um. Entrega rápida. Não recomendo a loja.
-false_negative_fake_predicted_genuine,housewares,0,1,0.3399040699005127,"Tudo como anunciado! O produto veio com defeito, porém não foi o que comprei. Além disso, n"
-false_negative_fake_predicted_genuine,sports_leisure,0,1,0.19025027751922607,Boa entrega...apesar do rastreio falho em vez da loja não recebi meu produto até agora.
+false_positive_genuine_predicted_fake,housewares,1,0,0.8808990716934204,"Muito ruim ... Comprei 02 Kits e foi entregue somente 1 Kit de cabide, porém, no rastreamento constam que foram entregues os 2 produtos e não consegui contato com o vendedor targaryen"
+false_positive_genuine_predicted_fake,perfumery,1,0,0.8091097474098206,Comprei dois kit para maquiagem chegou apenas um. Recomendo muito sempre comprei nas lannister sempre chegou certo primeira vez que não veio certo
+false_positive_genuine_predicted_fake,electronics,1,0,0.6211684942245483,"ainda não entregaram meu produto, apenas o outros que avia comprado junto, mas o cabo HDMI NÃO foi entregue"
+false_positive_genuine_predicted_fake,cool_stuff,1,0,0.642082691192627,JA LIGUEI PRA VOCES RECLAMANDO ESTOU AGUARDANDO UM RETORNO
+false_positive_genuine_predicted_fake,auto,1,0,0.6754782199859619,"O produto foi enviado rapidamente, e os correios milagrosamente entregaram rápido. A caixa veio com leves amassados e arranhões, mas nada que tenha chegado ao produto."
+false_positive_genuine_predicted_fake,garden_tools,1,0,0.8887041211128235,"Não me enviaram o produto, alegando que não o tinha no estoque. Não recebi o dinheiro de volta"
+false_positive_genuine_predicted_fake,garden_tools,1,0,0.7828342914581299,"Entrega super rápido, produto veio bem embalado, vou instalar amanha. Muito bom."
+false_positive_genuine_predicted_fake,furniture_decor,1,0,0.9020097255706787,Fiquei muito feliz cm o produto e cm o prazo de entrega
+false_positive_genuine_predicted_fake,sports_leisure,1,0,0.5590426921844482,O prazo de entrega era até dia 26/03 e até hoje ainda não recebi o produto e já faz mais de um mês q pedi. Não recomendo
+false_positive_genuine_predicted_fake,bed_bath_table,1,0,0.6837812662124634,Chegou muito antes da previsao de entrega o produto é de excelente qualidade
+false_negative_fake_predicted_genuine,computers_accessories,0,1,0.2943505644798279,Tudo como anunciado....Ótimo produto...Comprei o produto em uma embalagem diferente da que foi vendida e paguei frete por
+false_negative_fake_predicted_genuine,computers_accessories,0,1,0.18919271230697632,"Produto chegou e é muito bom, o único problema é que o material não é de pneus mais que os modelos de pneus"
+false_negative_fake_predicted_genuine,baby,0,1,0.09082871675491333,"Gostei bastante do tecido, bem acabado, material de boa qualidade e de boa qualidade. Por enquanto não fazem"
+false_negative_fake_predicted_genuine,baby,0,1,0.024882197380065918,Ainda estou aguardando a entrega do produto.
+false_negative_fake_predicted_genuine,electronics,0,1,0.4008927345275879,"O produto funciona bem, é de boa qualidade e tudo certo. O produto é bem resistente e com boa qualidade."
+false_negative_fake_predicted_genuine,garden_tools,0,1,0.44471561908721924,"Tudo maravilhoso! Atendimento 10% mais rapida do que eu esperava.Bom dia, chegou antes do prazo previsto"
+false_negative_fake_predicted_genuine,housewares,0,1,0.44559144973754883,"Produto entregue mal embalado, sem avarias. Não recebi o produto.Estou aguardando o produto para que chegue ainda."
+false_negative_fake_predicted_genuine,housewares,0,1,0.0011129975318908691,Não recebi até hoje o produto.Só acho que tenho que trocar o produto por um outro material.Vocês estão tentando
+false_negative_fake_predicted_genuine,baby,0,1,0.49938178062438965,"Não gostei do produto, mas chegou antes do prazo, porém o papel é bem leve, bem resistente e sem nenhum"
+false_negative_fake_predicted_genuine,sports_leisure,0,1,0.1818007230758667,Boa entrega...apesar do rastreio falho em vez da loja não recebi meu produto até agora.
