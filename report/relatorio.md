@@ -1,308 +1,217 @@
-# Relatorio tecnico-cientifico
+# Detecção de Reviews Falsas/Sintéticas em Português Brasileiro usando CNN 1D
 
-## Deteccao de reviews falsas/sinteticas em portugues brasileiro usando CNN 1D em PyTorch
+Estudante: Randerson Sousa de Sá Nunes
 
-Este relatorio apresenta um experimento supervisionado de classificacao textual
-binaria para distinguir reviews genuinas de reviews falsas/sinteticas em
-portugues brasileiro. O modelo principal e uma rede neural convolucional
-unidimensional implementada em PyTorch, comparada com dois baselines classicos:
-TF-IDF + Regressao Logistica e TF-IDF + SVM Linear.
+Professor: Prof. Dr. Rafael Torres Anchieta
 
-A unidade de analise e a review individual. O experimento nao afirma deteccao
-completa de astroturfing, pois o dataset nao contem usuario, data, rating,
-produto especifico, relacoes entre contas ou informacoes temporais.
+Disciplina: Aprendizado Profundo
 
-## 1. Introducao
+Data: Julho de 2026
 
-Reviews online influenciam a percepcao de consumidores e podem afetar decisoes
-de compra em plataformas de e-commerce. Nesse contexto, opinion spam, fake
-reviews e astroturfing sao conceitos importantes para estudar manipulacao de
-opiniao. Este trabalho aborda um recorte mais restrito: a classificacao de
-reviews individuais como genuinas ou falsas/sinteticas.
+Repositório do projeto: https://github.com/Altaeir-13/Indago-PT-Detecting-Synthetic-Reviews-in-Brazilian-Portuguese
 
-O objetivo tecnico e avaliar se uma CNN 1D, treinada diretamente sobre texto em
-portugues brasileiro, consegue distinguir as classes operacionais do Fake Reviews
-PT-BR Dataset. A classe falsa deve ser entendida como sintetica, gerada por
-GPT-2 no contexto do dataset, e nao como fraude humana comprovada.
+## 1. Introdução
 
-## 2. Dataset
+As avaliações publicadas em plataformas de comércio eletrônico exercem influência direta sobre a confiança dos consumidores, a reputação de lojas e a decisão de compra. Nesse contexto, a presença de avaliações artificiais, enganosas ou sintéticas pode comprometer a percepção pública sobre produtos e serviços. Este trabalho investiga um recorte específico desse problema: a classificação textual de avaliações individuais em português brasileiro como genuínas ou falsas/sintéticas.
 
-O experimento usa o Fake Reviews PT-BR Dataset, derivado da base publica
-Brazilian E-Commerce Public Dataset by Olist.
+A tarefa de aprendizado abordada é uma classificação binária supervisionada. A entrada do sistema é o texto de uma avaliação e a saída é um rótulo numérico, em que 0 representa uma avaliação falsa/sintética e 1 representa uma avaliação genuína. O modelo principal utilizado é uma rede neural convolucional unidimensional, implementada em PyTorch, comparada com dois modelos de referência baseados em TF-IDF: Regressão Logística e SVM Linear.
 
-Fontes:
+A escolha da CNN 1D é motivada pela capacidade desse tipo de arquitetura de capturar padrões locais em sequências textuais, como combinações curtas de palavras e expressões recorrentes. Trata-se de uma arquitetura adequada para demonstrar um pipeline completo de aprendizado profundo, mantendo menor complexidade computacional em comparação com modelos contextuais pré-treinados, como BERTimbau.
 
-- Fake Reviews PT-BR Dataset: https://github.com/cristianomg10/fake-reviews-ptbr-dataset
-- Olist: https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+## 2. Apresentação do Dataset
 
-Colunas reais detectadas e registradas em `outputs/tables/column_mapping.json`:
+O conjunto de dados utilizado neste trabalho foi o Fake Reviews PT-BR Dataset, disponibilizado publicamente por Borges (2025) em repositório no GitHub. Esse corpus foi construído a partir de avaliações genuínas extraídas da base pública Brazilian E-Commerce Public Dataset by Olist e de avaliações falsas/sintéticas geradas por GPT-2 em português brasileiro. O dataset utilizado no experimento contém avaliações textuais, categorias de produtos e rótulos binários associados à distinção entre reviews genuínas e falsas/sintéticas.
 
-| Campo canonico | Coluna real |
-|---|---|
-| texto | `review_comment_message` |
-| categoria | `product_category_name` |
-| rotulo | `label` |
+O dataset está disponível no repositório público Fake Reviews PT-BR Dataset, mantido por Borges (2025), em: https://github.com/cristianomg10/fake-reviews-ptbr-dataset. A base original Olist, organizada por Olist e Sionek (2018), está disponível em: https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce. No experimento, foi utilizado o arquivo true_fake_dataset_top15.csv, contendo as colunas descritas na Tabela 1.
 
-Rotulos usados:
+Tabela 1 - Campos do dataset utilizado.
 
-| Rotulo | Interpretacao |
-|---:|---|
-| 0 | review falsa/sintetica |
-| 1 | review genuina |
+| Campo lógico | Nome da coluna | Descrição |
+|---|---|---|
+| Texto da avaliação | review_comment_message | Conteúdo textual da review |
+| Categoria | product_category_name | Categoria do produto |
+| Rótulo | label | 0 para falsa/sintética; 1 para genuína |
 
-## 3. Analise exploratoria
+Após a etapa de limpeza mínima, o conjunto de dados considerado no experimento totalizou 29.988 amostras. A classe 0 corresponde a avaliações falsas/sintéticas e a classe 1 corresponde a avaliações genuínas. Os dados são textos em português brasileiro, organizados em formato tabular, acompanhados por categoria de produto e rótulo supervisionado.
 
-A EDA foi gerada automaticamente em `outputs/tables/` e `outputs/figures/`.
-O resumo principal esta em `outputs/tables/eda_summary.json`.
-
-Principais numeros observados apos a limpeza minima:
-
-- Total de amostras: 29.988.
-- Valores ausentes nas colunas canonicas: 0.
-- Linhas duplicadas: 683.
-- Textos duplicados: 1.537.
-- Tamanho medio das reviews: 82,95 caracteres.
-- Mediana de caracteres: 92.
-- Tamanho medio em tokens: 13,98.
-- Mediana de tokens: 15.
-- Tamanho maximo observado: 272 caracteres e 45 tokens.
-
-Distribuicao por classe, conforme `outputs/tables/class_distribution.csv`:
-
-| Classe | Quantidade |
-|---|---:|
-| falsa/sintetica (`0`) | 15.000 |
-| genuina (`1`) | 14.988 |
-
-A distribuicao por categoria esta em `outputs/tables/category_distribution.csv`.
-A maioria das categorias manteve aproximadamente 2.000 exemplos; pequenas
-variacoes aparecem apos a limpeza, por exemplo `furniture_decor` com 1.997 e
-`electronics` com 1.998.
-
-Figuras geradas:
-
-- `outputs/figures/class_distribution.png`
-- `outputs/figures/category_distribution.png`
-- `outputs/figures/review_char_length_hist.png`
-- `outputs/figures/review_token_length_hist.png`
-- `outputs/figures/review_token_length_by_class.png`
-
-## 4. Trabalhos relacionados
-
-Borges et al. (2025) apresentam o benchmark associado ao Fake Reviews PT-BR
-Dataset, fornecendo uma base publica para classificacao de reviews falsas em
-portugues brasileiro. Kim (2014) mostrou que CNNs podem ser eficazes para
-classificacao de sentencas, explorando filtros convolucionais sobre sequencias
-de embeddings. Souza, Nogueira e Lotufo (2020) introduziram o BERTimbau, uma
-familia de modelos BERT para portugues brasileiro que pode servir como extensao
-futura ou comparacao posterior. Devlin et al. (2019) consolidaram o uso de
-Transformers pre-treinados em PLN, e Goodfellow, Bengio e Courville (2016)
-fornecem a base teorica geral de aprendizado profundo.
-
-Neste trabalho, BERTimbau nao e usado como modelo principal. O foco da avaliacao
-e a implementacao e analise de uma CNN 1D treinada no experimento.
-
-## 5. Metodo
-
-### 5.1 Pre-processamento
-
-O pipeline realiza limpeza minima para preservar sinais textuais:
-
-- converte o texto para string;
-- normaliza quebras de linha, tabulacoes e espacos consecutivos;
-- remove reviews vazias;
-- mantem pontuacao e vocabulario original, sem limpeza agressiva.
-
-Os dados foram divididos com estratificacao em treino, validacao e teste na
-proporcao 70/15/15, usando `random_state=42`.
-
-### 5.2 Baselines classicos
-
-Foram treinados dois modelos classicos:
-
-1. TF-IDF + Regressao Logistica.
-2. TF-IDF + SVM Linear.
-
-A AUC-ROC foi calculada tomando a classe `0` como classe de interesse. Na
-regressao logistica, o score usado foi a probabilidade da classe `0`. No SVM
-linear, o score foi ajustado para representar a classe falsa/sintetica.
-
-### 5.3 CNN 1D em PyTorch
-
-Arquitetura do modelo principal:
+A entrada textual pode ser representada formalmente como:
 
 ```text
-Embedding(vocab_size, embedding_dim, padding_idx=0)
--> Conv1d(in_channels=embedding_dim, out_channels=filters, kernel_size=kernel_size)
--> ReLU
--> GlobalMaxPool1d
--> Dropout
--> Linear(filters, 1)
+X = (x_1, x_2, ..., x_T)
 ```
 
-A saida da rede e um logit. Para avaliacao:
+Nessa representação, T corresponde ao tamanho da sequência textual e x_t representa o token observado na posição t. Antes de ser processado pela rede neural, o texto é tokenizado, truncado ou preenchido por padding e convertido em índices de vocabulário.
 
-- `prob_label_1 = sigmoid(logits)`;
-- `prob_label_0 = 1 - prob_label_1`;
-- `pred_label = 1` se `prob_label_1 >= 0.5`, senao `0`.
+Tabela 2 - Exemplos curtos de avaliações do dataset.
 
-Treinamento:
+| Classe | Categoria | Exemplo curto |
+|---|---|---|
+| 0 - falsa/sintética | garden_tools | "Demorou um pouco pra chegar, mas fiquei feliz com a compra..." |
+| 1 - genuína | health_beauty | "Sempre comprei neste site e nunca tive qualquer problema..." |
 
-- framework: PyTorch;
-- loss: `BCEWithLogitsLoss`;
-- otimizador: Adam;
-- learning rate: 0.001;
-- batch size: 64;
-- limite: 30 epocas;
-- early stopping por `val_loss`, `patience=4`;
-- melhor modelo salvo em `outputs/models/cnn1d.pt`.
+![Figura 1 - Distribuição das classes no dataset após a limpeza.](../outputs/figures/class_distribution.png)
 
-O historico real de treino esta em `outputs/tables/cnn_training_history.csv`.
-O menor `val_loss` ocorreu na epoca 7, e o treinamento parou na epoca 11 apos
-nao haver melhora suficiente dentro da paciencia configurada.
+![Figura 2 - Distribuição das categorias de produto no dataset.](../outputs/figures/category_distribution.png)
 
-## 6. Configuracao experimental
+## 3. Limitações e Tratamento do Dataset
 
-A configuracao experimental foi definida para manter reproducibilidade e
-comparacao direta entre os modelos.
+A limpeza aplicada aos textos foi propositalmente mínima, com o objetivo de preservar sinais linguísticos potencialmente úteis para a classificação. Foram removidas avaliações vazias, e foram normalizados espaços consecutivos e quebras de linha. Não foi realizada remoção agressiva de pontuação, acentos ou marcas lexicais, pois tais elementos podem contribuir para a distinção entre os padrões textuais das classes.
 
-| Item | Configuracao |
-|---|---|
-| Linguagem | Python |
-| Modelo neural | CNN 1D em PyTorch |
-| Baselines | TF-IDF + Regressao Logistica; TF-IDF + SVM Linear |
-| Divisao dos dados | treino/validacao/teste em 70/15/15 |
-| Estratificacao | por rotulo binario |
-| Semente | `random_state=42` |
-| Classe de interesse | `0`, falsa/sintetica |
-| Loss da CNN | `BCEWithLogitsLoss` |
-| Otimizador da CNN | Adam |
-| Learning rate | 0.001 |
-| Batch size | 64 |
-| Early stopping | monitoramento de `val_loss`, `patience=4` |
-| Saida da CNN | logit convertido com sigmoid para probabilidades |
+A análise exploratória indicou ausência de valores nulos nas colunas canônicas após o carregamento, mas identificou 683 linhas duplicadas e 1.537 textos duplicados. Também se observou que as avaliações são relativamente curtas, com média de 82,95 caracteres e 13,98 tokens por review, além de mediana de 15 tokens.
 
-As metricas foram calculadas no conjunto de teste. Para precisao, recall e F1,
-a classe `0` foi tratada como classe positiva operacional. Para AUC-ROC, o
-score usado foi a probabilidade ou pontuacao da classe falsa/sintetica.
+A principal limitação conceitual do dataset está relacionada à natureza da classe falsa. Essa classe é sintética e operacional, pois foi gerada por GPT-2, e não representa necessariamente fraude humana comprovada. Além disso, o conjunto de dados não contém usuário, data, rating, produto específico ou relações entre contas. Portanto, este trabalho não realiza detecção completa de astroturfing, limitando-se à classificação de avaliações individuais.
+
+![Figura 3 - Distribuição do tamanho das avaliações em tokens.](../outputs/figures/review_token_length_hist.png)
+
+![Figura 4 - Distribuição do tamanho das avaliações por classe.](../outputs/figures/review_token_length_by_class.png)
+
+## 4. Trabalhos Relacionados
+
+Borges et al. (2025) apresentam um benchmark de algoritmos de aprendizado de máquina para detecção de fake reviews em português brasileiro. Esse trabalho é diretamente relacionado ao presente estudo por tratar do mesmo domínio e por disponibilizar uma base pública adequada à investigação de avaliações falsas/sintéticas.
+
+Kim (2014) propôs o uso de redes neurais convolucionais para classificação de sentenças, demonstrando que filtros convolucionais aplicados sobre embeddings podem capturar padrões discriminativos em texto. Essa referência fundamenta a escolha da CNN 1D como arquitetura principal deste trabalho.
+
+Souza, Nogueira e Lotufo (2020) introduziram o BERTimbau, um modelo contextual pré-treinado para português brasileiro. Embora modelos baseados em BERT sejam relevantes para trabalhos futuros, eles não foram implementados neste experimento, pois o objetivo da avaliação foi treinar e analisar diretamente uma CNN 1D. Devlin et al. (2019) e Goodfellow, Bengio e Courville (2016) também são referências importantes para contextualizar modelos Transformer e fundamentos de aprendizado profundo.
+
+## 5. Método Implementado
+
+O método implementado segue um pipeline textual composto pelas seguintes etapas: texto da avaliação, tokenização, padding ou truncamento, embedding treinável, convolução unidimensional, função de ativação ReLU, Global Max Pooling, dropout, camada linear e saída binária. A camada de embedding converte tokens discretos em vetores densos. A convolução unidimensional aplica filtros locais sobre a sequência, buscando padrões curtos de palavras. A função ReLU introduz não linearidade ao modelo, enquanto o Global Max Pooling seleciona os sinais mais intensos detectados pelos filtros.
+
+O dropout foi utilizado como mecanismo de regularização para reduzir overfitting. A camada linear final gera um logit, que é usado diretamente pela função BCEWithLogitsLoss durante o treinamento. Essa função combina a sigmoid e a entropia cruzada binária de forma numericamente estável.
+
+Trecho 1 - Definição das principais camadas da CNN 1D em src/train_cnn.py.
+
+```python
+self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=0)
+self.conv = nn.Conv1d(
+    in_channels=embedding_dim,
+    out_channels=filters,
+    kernel_size=kernel_size,
+)
+self.relu = nn.ReLU()
+self.dropout = nn.Dropout(dropout)
+self.classifier = nn.Linear(filters, 1)
+```
+
+## 6. Configuração Experimental
+
+O experimento foi desenvolvido em Python. A implementação da CNN 1D foi realizada com PyTorch, enquanto os modelos de referência foram treinados com scikit-learn. As bibliotecas pandas e numpy foram utilizadas para manipulação dos dados, e matplotlib e seaborn foram empregadas na geração dos gráficos.
+
+A divisão dos dados foi estratificada em treino, validação e teste, nas proporções de 70%, 15% e 15%, respectivamente, com random_state igual a 42. Os modelos avaliados foram TF-IDF com Regressão Logística, TF-IDF com SVM Linear e CNN 1D em PyTorch. As métricas foram calculadas no conjunto de teste.
+
+Tabela 3 - Hiperparâmetros principais da CNN 1D.
+
+| Parâmetro | Valor |
+|---|---:|
+| vocab_size | 20000 |
+| max_len | 128 |
+| embedding_dim | 128 |
+| filters | 128 |
+| kernel_size | 5 |
+| dropout | 0.5 |
+| learning_rate | 0.001 |
+| batch_size | 64 |
+| epochs | 30 |
+| patience | 4 |
+
+Tabela 4 - Modelos avaliados no experimento.
+
+| Modelo | Representação | Finalidade |
+|---|---|---|
+| TF-IDF + Regressão Logística | TF-IDF | Baseline linear probabilístico |
+| TF-IDF + SVM Linear | TF-IDF | Baseline linear de margem |
+| CNN 1D PyTorch | Tokens e embedding treinável | Modelo principal de deep learning |
+
+Foram utilizadas as seguintes métricas: acurácia, precisão para a classe falsa/sintética, recall para a classe falsa/sintética, F1-score para a classe falsa/sintética, F1 macro, AUC-ROC orientada para a classe 0 e matriz de confusão. A classe de interesse foi definida como label 0, pois representa a avaliação falsa/sintética.
+
 ## 7. Resultados
 
-A tabela abaixo reproduz os resultados reais de
-`outputs/tables/model_comparison.csv`.
+A Tabela 5 apresenta os resultados reais do experimento no conjunto de teste. A CNN 1D em PyTorch obteve o melhor desempenho geral, superando os dois modelos de referência baseados em TF-IDF.
 
-| Modelo | Accuracy | Precision fake label 0 | Recall fake label 0 | F1 fake label 0 | F1 macro | AUC-ROC fake label 0 |
+Tabela 5 - Resultados quantitativos no conjunto de teste.
+
+| Modelo | Accuracy | Precision 0 | Recall 0 | F1 0 | F1 macro | AUC-ROC 0 |
 |---|---:|---:|---:|---:|---:|---:|
-| TF-IDF + Regressao Logistica | 0.885086 | 0.866385 | 0.910667 | 0.887974 | 0.885009 | 0.949770 |
+| TF-IDF + Regressão Logística | 0.885086 | 0.866385 | 0.910667 | 0.887974 | 0.885009 | 0.949770 |
 | TF-IDF + SVM Linear | 0.897533 | 0.882428 | 0.917333 | 0.899542 | 0.897492 | 0.962379 |
 | CNN 1D PyTorch | 0.949544 | 0.950557 | 0.948444 | 0.949499 | 0.949544 | 0.987807 |
 
-Figuras de resultado:
+A CNN 1D atingiu 0,949544 de acurácia, 0,949499 de F1-score para a classe falsa/sintética, 0,949544 de F1 macro e 0,987807 de AUC-ROC orientada para a classe 0. Entre os baselines, o SVM Linear apresentou desempenho superior ao da Regressão Logística.
 
-- `outputs/figures/cnn_loss_curve.png`
-- `outputs/figures/cnn_accuracy_curve.png`
-- `outputs/figures/confusion_matrix_cnn1d.png`
-- `outputs/figures/confusion_matrix_linear_svm.png`
-- `outputs/figures/confusion_matrix_logistic_regression.png`
+![Figura 5 - Curva de perda da CNN 1D durante o treinamento.](../outputs/figures/cnn_loss_curve.png)
 
-## 8. Analise critica
+![Figura 6 - Curva de acurácia da CNN 1D durante o treinamento.](../outputs/figures/cnn_accuracy_curve.png)
 
-A CNN 1D PyTorch teve o melhor desempenho geral. Ela alcancou acuracia de
-0,949544, F1 macro de 0,949544 e AUC-ROC de 0,987807 para a classe
-falsa/sintetica. Em termos percentuais, isso corresponde a aproximadamente
-94,95% de F1 macro e 98,78% de AUC-ROC para a classe `0`.
+![Figura 7 - Matriz de confusão da CNN 1D no conjunto de teste.](../outputs/figures/confusion_matrix_cnn1d.png)
 
-Entre os modelos classicos, o SVM linear superou a regressao logistica. O SVM
-obteve acuracia de 0,897533 contra 0,885086 da regressao logistica, alem de F1
-macro de 0,897492 contra 0,885009. Isso sugere que uma margem linear sobre
-representacoes TF-IDF foi mais eficaz do que a regressao logistica neste recorte.
+## 8. Análise e Discussão
 
-Comparada ao SVM linear, a CNN teve ganho de aproximadamente 5,2 pontos
-percentuais de acuracia. A alta AUC da CNN sugere boa separacao entre reviews
-sinteticas e genuinas no dataset, especialmente quando a classe falsa/sintetica
-(`0`) e tratada como classe de interesse.
+A CNN 1D apresentou o melhor desempenho geral do experimento. Em comparação com o SVM Linear, a CNN obteve ganho aproximado de 5,2 pontos percentuais de acurácia. Esse resultado sugere que o uso de embeddings treináveis e filtros convolucionais foi eficaz para capturar padrões locais relevantes nas avaliações textuais.
 
-Esse resultado, entretanto, deve ser interpretado com cautela. O modelo aprende
-a distinguir textos genuinos de textos sinteticos gerados no processo de
-construcao do dataset. Isso nao equivale a detectar fraude humana real nem a
-identificar astroturfing completo. Para esse escopo mais amplo, seriam
-necessarios metadados de usuario, tempo, produto, rating, relacoes entre contas
-e sinais de coordenacao.
+O SVM Linear foi o baseline clássico mais forte, indicando que representações TF-IDF continuam competitivas em tarefas de classificação textual. A Regressão Logística também apresentou desempenho consistente, mas inferior ao SVM Linear e à CNN 1D.
 
-## 9. Analise qualitativa de erros
+A AUC-ROC elevada da CNN indica boa separação entre reviews sintéticas e genuínas no conjunto de teste. As curvas de treinamento mostram que o menor valor de perda de validação ocorreu na época 7, e o treinamento foi encerrado posteriormente por early stopping. A matriz de confusão da CNN reforça a interpretação de que o modelo apresentou desempenho equilibrado entre as classes.
 
-A analise qualitativa esta em `outputs/tables/cnn_error_analysis.csv`. O arquivo
-lista falsos positivos e falsos negativos da CNN:
+Apesar dos resultados positivos, a interpretação deve ser cautelosa. A classe falsa foi gerada por GPT-2, o que significa que o modelo pode ter aprendido padrões específicos do gerador ou do processo de construção do dataset. Assim, os resultados não devem ser interpretados como detecção de fraude humana real ou de astroturfing completo.
 
-- falsos positivos: reviews genuinas classificadas como falsas/sinteticas;
-- falsos negativos: reviews falsas/sinteticas classificadas como genuinas.
+![Figura 8 - Matriz de confusão do baseline TF-IDF + Regressão Logística.](../outputs/figures/confusion_matrix_logistic_regression.png)
 
-Os exemplos devem ser avaliados qualitativamente no relatorio final da disciplina
-ou do TCC. A leitura desses casos ajuda a investigar situacoes em que reviews
-curtas, genericas, muito padronizadas, negativas ou com poucos detalhes concretos
-podem ficar mais proximas da fronteira de decisao.
+![Figura 9 - Matriz de confusão do baseline TF-IDF + SVM Linear.](../outputs/figures/confusion_matrix_linear_svm.png)
 
-Essa etapa tambem e importante para discutir ameacas a validade. Como a classe
-falsa foi gerada por GPT-2, o modelo pode estar aprendendo padroes do gerador ou
-do procedimento de construcao da base, e nao necessariamente caracteristicas
-universais de fraude humana.
+## 9. Análise Qualitativa de Erros
 
-## 10. Ameacas a validade e limitacoes
+A análise qualitativa de erros foi realizada a partir das predições da CNN 1D no conjunto de teste. Falsos positivos correspondem a avaliações genuínas classificadas como falsas/sintéticas. Falsos negativos correspondem a avaliações falsas/sintéticas classificadas como genuínas.
 
-Principais limitacoes:
+Tabela 6 - Exemplos curtos de erros da CNN 1D.
 
-- A classe falsa e sintetica/operacional, nao fraude humana comprovada.
-- A unidade de analise e apenas a review individual.
-- Nao ha dados de usuario, data, rating, produto especifico ou rede de contas.
-- Duplicatas existem no dataset e foram documentadas na EDA.
-- O bom desempenho pode refletir diferencas entre textos da Olist e textos
-  gerados por GPT-2, nao necessariamente padroes gerais de fake reviews reais.
-- BERTimbau nao foi treinado neste experimento; ele permanece como comparacao
-  futura.
+| Tipo de erro | Interpretação | Exemplo curto |
+|---|---|---|
+| Falso positivo | Genuína predita como falsa/sintética | "Ainda é cedo para avaliar o produto." |
+| Falso negativo | Falsa/sintética predita como genuína | "Não gostei dos travesseiros... prazo de entrega é muito longo..." |
 
-## 11. Conclusao
+Esses casos sugerem que avaliações muito curtas, genéricas, padronizadas ou com poucos detalhes concretos podem ficar próximas da fronteira de decisão do modelo. Também é possível que alguns textos sintéticos imitem padrões reais das avaliações da Olist, dificultando a separação exclusivamente com base em características textuais.
 
-O experimento implementou um pipeline completo e reproduzivel para classificacao
-de reviews falsas/sinteticas em portugues brasileiro. A CNN 1D em PyTorch foi o
-modelo principal e superou os dois baselines classicos avaliados. O SVM linear
-foi o melhor baseline entre os modelos TF-IDF, enquanto a CNN apresentou o melhor
-resultado geral, com aproximadamente 94,95% de F1 macro e 98,78% de AUC-ROC para
-a classe falsa/sintetica.
+## 10. Comparação com Trabalhos Relacionados
 
-Para o TCC, este experimento pode ser aproveitado de tres formas principais:
+A comparação com a literatura deve considerar que os protocolos, conjuntos de dados, métricas e objetivos não são idênticos. Ainda assim, a Tabela 7 posiciona o presente trabalho em relação a referências relevantes da área.
 
-1. Como modelo neural intermediario entre abordagens TF-IDF e uma comparacao
-   futura com BERTimbau.
-2. Como pipeline experimental reutilizavel para carregamento, EDA,
-   pre-processamento, treino, avaliacao, geracao de figuras e analise de erros.
-3. Como base para discutir ameacas a validade, especialmente a diferenca entre
-   detectar texto sintetico em um dataset controlado e detectar fake reviews ou
-   astroturfing em ambientes reais.
+Tabela 7 - Comparação qualitativa com trabalhos relacionados.
 
-Trabalhos futuros podem incluir comparacao com BERTimbau, avaliacao em datasets
-externos, estudo de robustez, analise mais detalhada de erros e incorporacao de
-metadados quando disponiveis. BERTimbau deve ser tratado como extensao ou
-comparacao futura, nao como substituto do modelo principal desta avaliacao.
+| Trabalho | Dataset | Modelo | Métrica/resultado | Observação |
+|---|---|---|---|---|
+| Borges et al. (2025) | Fake Reviews PT-BR | Modelos clássicos e representações textuais/contextuais | Benchmark de referência | Protocolos não reproduzidos integralmente neste trabalho |
+| Kim (2014) | Sentenças em inglês | CNN para classificação textual | Referência arquitetural | Fundamenta o uso de convolução em texto |
+| Souza et al. (2020) | Corpora em português | BERTimbau | Modelo pré-treinado | Extensão futura para comparação contextual |
+| Este trabalho | Fake Reviews PT-BR | CNN 1D PyTorch | F1 macro 0,949544; AUC 0,987807 | Implementação própria e reprodutível |
 
-## Referencias
+## 11. Conclusão
 
-BORGES, Eduardo C. R. et al. Benchmarking Machine Learning Algorithms in Fake
-Reviews Detection in Brazilian Portuguese. Revista Brasileira de Computacao
-Aplicada, 2025.
+Este trabalho apresentou um experimento completo para classificação de reviews falsas/sintéticas em português brasileiro usando uma CNN 1D em PyTorch. O pipeline incluiu carregamento do dataset, limpeza mínima, análise exploratória, divisão estratificada, treinamento de baselines, treinamento do modelo neural, avaliação quantitativa e análise qualitativa de erros.
 
-BORGES, Eduardo C. R. Fake Reviews PT-BR Dataset, 2025. Disponivel em:
-https://github.com/cristianomg10/fake-reviews-ptbr-dataset.
+A CNN 1D superou os baselines avaliados, atingindo 0,949544 de acurácia e 0,949544 de F1 macro. Esses resultados indicam que uma arquitetura convolucional simples pode ser competitiva para a classificação textual neste dataset. Contudo, as conclusões devem permanecer restritas ao escopo do experimento: o modelo distingue avaliações genuínas de avaliações sintéticas geradas no dataset, mas não comprova detecção de fraude humana nem de astroturfing completo.
 
-OLIST; SIONEK, Andre. Brazilian E-Commerce Public Dataset by Olist, 2018.
-Disponivel em: https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce.
+Como continuidade, o projeto pode ser reaproveitado em um Trabalho de Conclusão de Curso como pipeline experimental reutilizável, como etapa intermediária entre modelos TF-IDF e BERTimbau, e como base para discussão de ameaças à validade. Trabalhos futuros podem incluir comparação com BERTimbau, CNN multi-kernel, validação cruzada, deduplicação antes da divisão dos dados e uso de metadados comportamentais ou grafos quando houver dados apropriados.
 
-KIM, Yoon. Convolutional Neural Networks for Sentence Classification. EMNLP,
-2014.
+## 12. Declaração de Uso de IA Generativa
 
-DEVLIN, Jacob et al. BERT: Pre-training of Deep Bidirectional Transformers for
-Language Understanding. NAACL-HLT, 2019.
+Ferramentas de IA generativa foram utilizadas como apoio na estruturação do código, na organização da documentação, na revisão textual e na diagramação dos artefatos finais. As métricas, tabelas e figuras apresentadas neste relatório foram geradas pelo experimento executado no projeto, a partir dos arquivos reais produzidos pelo pipeline.
 
-SOUZA, Fabio; NOGUEIRA, Rodrigo; LOTUFO, Roberto. BERTimbau: Pretrained BERT
-Models for Brazilian Portuguese. BRACIS, 2020.
+## 13. Referências
 
-GOODFELLOW, Ian; BENGIO, Yoshua; COURVILLE, Aaron. Deep Learning. MIT Press,
-2016.
+BORGES, Eduardo C. R. et al. Benchmarking Machine Learning Algorithms in Fake Reviews Detection in Brazilian Portuguese. Revista Brasileira de Computação Aplicada, 2025.
+
+BORGES, Eduardo C. R. Fake Reviews PT-BR Dataset. 2025. Disponível em: https://github.com/cristianomg10/fake-reviews-ptbr-dataset.
+
+OLIST; SIONEK, Andre. Brazilian E-Commerce Public Dataset by Olist. 2018. Disponível em: https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce.
+
+KIM, Yoon. Convolutional Neural Networks for Sentence Classification. EMNLP, 2014.
+
+DEVLIN, Jacob et al. BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding. NAACL-HLT, 2019.
+
+SOUZA, Fábio; NOGUEIRA, Rodrigo; LOTUFO, Roberto. BERTimbau: Pretrained BERT Models for Brazilian Portuguese. BRACIS, 2020.
+
+GOODFELLOW, Ian; BENGIO, Yoshua; COURVILLE, Aaron. Deep Learning. MIT Press, 2016.
+
+PEDREGOSA, Fabian et al. Scikit-learn: Machine Learning in Python. Journal of Machine Learning Research, 2011.
+
+PASZKE, Adam et al. PyTorch: An Imperative Style, High-Performance Deep Learning Library. NeurIPS, 2019.
