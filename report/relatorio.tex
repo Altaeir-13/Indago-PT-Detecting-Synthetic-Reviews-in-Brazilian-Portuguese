@@ -76,6 +76,8 @@ A tarefa de aprendizado abordada é uma classificação binária supervisionada.
 
 A escolha da CNN 1D é motivada pela capacidade desse tipo de arquitetura de capturar padrões locais em sequências textuais, como combinações curtas de palavras e expressões recorrentes. Trata-se de uma arquitetura adequada para demonstrar um pipeline completo de aprendizado profundo, mantendo menor complexidade computacional em comparação com modelos contextuais pré-treinados, como BERTimbau \cite{souza2020bertimbau}.
 
+A escolha pela CNN 1D, em vez de uma arquitetura recorrente, também se justifica pelo tipo de tarefa investigada. Embora RNNs, LSTMs e GRUs sejam historicamente associadas ao processamento sequencial, a classificação de reviews individuais não exige necessariamente a modelagem autorregressiva de dependências longas. Neste trabalho, as avaliações são relativamente curtas e a decisão de classificação pode depender fortemente de padrões locais de palavras, expressões avaliativas e combinações recorrentes no texto. Nesse cenário, filtros convolucionais unidimensionais funcionam como detectores de padrões locais sobre a sequência de tokens, enquanto o Global Max Pooling seleciona os sinais mais relevantes independentemente da posição em que aparecem na avaliação. Essa escolha encontra apoio em \citeonline{kim2014cnn}, que demonstrou que CNNs simples aplicadas sobre embeddings podem alcançar desempenho competitivo em tarefas de classificação de sentenças, e em \citeonline{bai2018empirical}, que argumentaram que a associação automática entre sequências e redes recorrentes deve ser reconsiderada, mostrando que arquiteturas convolucionais temporais podem ser alternativas fortes a LSTMs e GRUs em diferentes tarefas sequenciais. Portanto, a CNN 1D foi adotada neste trabalho como uma alternativa simples, eficiente, paralelizável e adequada ao objetivo de classificação textual supervisionada.
+
 \section{Apresentação do Dataset}
 
 O conjunto de dados utilizado neste trabalho foi o \textit{Fake Reviews PT-BR Dataset}, disponibilizado publicamente por \citeonline{borges2025benchmark} e por seu repositório de dados \cite{borges2025dataset}. Esse corpus foi construído a partir de avaliações genuínas extraídas da base pública \textit{Brazilian E-Commerce Public Dataset by Olist} \cite{olist2018dataset} e de avaliações falsas/sintéticas geradas por GPT-2 em português brasileiro. O dataset utilizado no experimento contém avaliações textuais, categorias de produtos e rótulos binários associados à distinção entre reviews genuínas e falsas/sintéticas.
@@ -114,9 +116,9 @@ em que \(T\) corresponde ao tamanho da sequência textual e \(x_t\) representa o
 \toprule
 \makecell[c]{\textbf{Classe}} & \makecell[c]{\textbf{Categoria}} & \makecell[c]{\textbf{Exemplo curto}} \\
 \midrule
-0 - falsa/sintética & garden\_tools & ``Demorou um pouco pra chegar, mas fiquei feliz com a compra...'' \\
+0 - falsa/sintética & furniture\_decor & ``tudo perfeito. Ainda não recebi meu produto...'' \\
 \addlinespace
-1 - genuína & health\_beauty & ``Sempre comprei neste site e nunca tive qualquer problema...'' \\
+1 - genuína & housewares & ``produto entregue antes do prazo'' \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -183,9 +185,9 @@ O dropout foi utilizado como mecanismo de regularização para reduzir overfitti
 \toprule
 \makecell[c]{\textbf{Camada}} & \makecell[c]{\textbf{Configuração}} & \makecell[c]{\textbf{Função}} \\
 \midrule
-Embedding & vocab\_size=20000;\newline embedding\_dim=128;\newline padding\_idx=0 & Representar tokens como vetores densos \\
+Embedding & vocab\_size=30000;\newline embedding\_dim=128;\newline padding\_idx=0 & Representar tokens como vetores densos \\
 \addlinespace
-Conv1D & 128 filtros;\newline kernel\_size=5 & Capturar padrões locais da sequência textual \\
+Conv1D & 256 filtros;\newline kernel\_size=7 & Capturar padrões locais da sequência textual \\
 \addlinespace
 ReLU & sem parâmetros treináveis & Introduzir não linearidade \\
 \addlinespace
@@ -193,7 +195,7 @@ Global Max Pooling & agregação máxima global na sequência & Selecionar ativa
 \addlinespace
 Dropout & p=0.5 & Reduzir overfitting \\
 \addlinespace
-Linear & 128 $\rightarrow$ 1 & Gerar logit da classificação binária \\
+Linear & 256 $\rightarrow$ 1 & Gerar logit da classificação binária \\
 \addlinespace
 Sigmoid na avaliação & aplicada após a saída linear & Converter logit em probabilidade \\
 \bottomrule
@@ -211,7 +213,7 @@ O experimento foi desenvolvido em Python. A implementação da CNN 1D foi realiz
 
 O código-fonte, as instruções de reprodução e a descrição das dependências estão disponíveis no repositório do projeto na documentação principal. A entrega inclui o relatório final, o código-fonte no GitHub, os slides da apresentação e a referência ao dataset utilizado. O repositório do projeto está disponível em \url{https://github.com/Altaeir-13/Indago-PT-Detecting-Synthetic-Reviews-in-Brazilian-Portuguese}. A reprodução completa está documentada no repositório, incluindo instalação das dependências, posicionamento do dataset, execução do procedimento experimental e descrição dos artefatos gerados.
 
-A divisão dos dados foi estratificada em treino, validação e teste, nas proporções de 70\%, 15\% e 15\%, respectivamente, com random\_state igual a 42. Os modelos avaliados foram TF-IDF com Regressão Logística, TF-IDF com SVM Linear e CNN 1D em PyTorch. As métricas foram calculadas no conjunto de teste.
+A divisão dos dados foi estratificada em treino, validação e teste, nas proporções de 70\%, 15\% e 15\%, respectivamente, com random\_state igual a 13. Os modelos avaliados foram TF-IDF com Regressão Logística, TF-IDF com SVM Linear e CNN 1D em PyTorch. As métricas foram calculadas no conjunto de teste.
 
 \subsection{Ambiente de execução}
 
@@ -250,19 +252,19 @@ Dispositivo utilizado no treinamento & cuda \\
 \toprule
 Parâmetro & Valor \\
 \midrule
-vocab\_size & 20000 \\
-max\_len & 128 \\
+vocab\_size & 30000 \\
+max\_len & 256 \\
 embedding\_dim & 128 \\
-filters & 128 \\
-kernel\_size & 5 \\
+filters & 256 \\
+kernel\_size & 7 \\
 dropout & 0.5 \\
 lr & 0.001 \\
-batch\_size & 64 \\
-epochs & 30 \\
-patience & 4 \\
+batch\_size & 128 \\
+epochs & 50 \\
+patience & 3 \\
 loss & BCEWithLogitsLoss \\
 optimizer & Adam \\
-random\_state & 42 \\
+random\_state & 13 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -303,17 +305,17 @@ A Tabela~\ref{tab:resultados} apresenta os resultados reais do experimento no co
 \toprule
 \makecell[c]{\textbf{Modelo}} & \makecell[c]{\textbf{Accuracy}} & \makecell[c]{\textbf{Precision 0}} & \makecell[c]{\textbf{Recall 0}} & \makecell[c]{\textbf{F1 0}} & \makecell[c]{\textbf{F1 macro}} & \makecell[c]{\textbf{AUC-ROC 0}} \\
 \midrule
-TF-IDF + Regressão Logística & 0.881085 & 0.867553 & 0.899556 & 0.883264 & 0.881043 & 0.949981 \\
+TF-IDF + Regressão Logística & 0.877084 & 0.855765 & 0.907111 & 0.880690 & 0.876971 & 0.947198 \\
 \addlinespace
-TF-IDF + SVM Linear          & 0.894421 & 0.886037 & 0.905333 & 0.895581 & 0.894408 & 0.959195 \\
+TF-IDF + SVM Linear          & 0.897311 & 0.878814 & 0.921778 & 0.899783 & 0.897248 & 0.960960 \\
 \addlinespace
-CNN 1D PyTorch               & 0.962658 & 0.963078 & 0.962222 & 0.962650 & 0.962658 & 0.991639 \\
+CNN 1D PyTorch               & 0.961325 & 0.973540 & 0.948444 & 0.960828 & 0.961319 & 0.991352 \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
 
-A CNN 1D atingiu 0,962658 de acurácia, 0,962650 de F1-score para a classe falsa/sintética, 0,962658 de F1 macro e 0,991639 de AUC-ROC orientada para a classe 0. Entre os baselines, o SVM Linear apresentou desempenho superior ao da Regressão Logística.
+A CNN 1D atingiu 0,961325 de acurácia, 0,960828 de F1-score para a classe falsa/sintética, 0,961319 de F1 macro e 0,991352 de AUC-ROC orientada para a classe 0. Entre os baselines, o SVM Linear apresentou desempenho superior ao da Regressão Logística.
 
 \begin{figure}[H]
 \centering
@@ -338,11 +340,11 @@ A CNN 1D atingiu 0,962658 de acurácia, 0,962650 de F1-score para a classe falsa
 
 \section{Análise e Discussão}
 
-A CNN 1D apresentou o melhor desempenho geral do experimento. Em comparação com o SVM Linear, a CNN obteve ganho aproximado de 6,8 pontos percentuais de acurácia. Esse resultado sugere que o uso de embeddings treináveis e filtros convolucionais foi eficaz para capturar padrões locais relevantes nas avaliações textuais.
+A CNN 1D apresentou o melhor desempenho geral do experimento. Em comparação com o SVM Linear, a CNN obteve ganho aproximado de 6,4 pontos percentuais de acurácia. Esse resultado sugere que o uso de embeddings treináveis e filtros convolucionais foi eficaz para capturar padrões locais relevantes nas avaliações textuais.
 
 O SVM Linear foi o baseline clássico mais forte, indicando que representações TF-IDF continuam competitivas em tarefas de classificação textual. A Regressão Logística também apresentou desempenho consistente, mas inferior ao SVM Linear e à CNN 1D.
 
-A AUC-ROC elevada da CNN, aproximadamente 99,16\%, indica boa separação entre reviews sintéticas e genuínas no conjunto de teste. O F1 macro da CNN foi aproximadamente 96,27\%, sugerindo desempenho equilibrado entre as classes. As curvas de treinamento e validação indicam que o modelo aprendeu padrões relevantes do conjunto de treino sem apresentar sinais fortes de underfitting. A menor perda de validação ocorreu na época 7; depois disso, a perda de treino continuou diminuindo, enquanto a perda de validação oscilou e aumentou levemente. Essa diferença sugere possibilidade de overfitting leve, controlado parcialmente pelo uso de dropout e early stopping. O treinamento foi encerrado na época 11, após quatro épocas sem melhora suficiente na perda de validação, e o melhor checkpoint foi escolhido com base na perda de validação. A matriz de confusão da CNN reforça a interpretação de que o modelo apresentou desempenho equilibrado entre as classes.
+A AUC-ROC elevada da CNN, aproximadamente 99,14\%, indica boa separação entre reviews sintéticas e genuínas no conjunto de teste. O F1 macro da CNN foi aproximadamente 96,13\%, sugerindo desempenho equilibrado entre as classes. As curvas de treinamento e validação indicam que o modelo aprendeu padrões relevantes do conjunto de treino sem apresentar sinais fortes de underfitting. A menor perda de validação ocorreu na época 5; depois disso, a perda de treino continuou diminuindo, enquanto a perda de validação oscilou e aumentou levemente. Essa diferença sugere possibilidade de overfitting leve, controlado parcialmente pelo uso de dropout e early stopping. O treinamento foi encerrado na época 8, após três épocas sem melhora suficiente na perda de validação, e o melhor checkpoint foi escolhido com base na perda de validação. A matriz de confusão da CNN reforça a interpretação de que o modelo apresentou desempenho equilibrado entre as classes.
 
 Apesar dos resultados positivos, a interpretação deve ser cautelosa. A classe falsa foi gerada por GPT-2, o que significa que o modelo pode ter aprendido padrões específicos do gerador ou do processo de construção do dataset. Assim, os resultados não devem ser interpretados como detecção de fraude humana real ou de astroturfing completo.
 
@@ -373,9 +375,9 @@ A análise qualitativa de erros foi realizada a partir das predições da CNN 1D
 \toprule
 \makecell[c]{\textbf{Tipo de erro}} & \makecell[c]{\textbf{Interpretação}} & \makecell[c]{\textbf{Exemplo curto}} \\
 \midrule
-Falso positivo & Genuína predita como falsa/sintética & ``Ainda é cedo para avaliar o produto.'' \\
+Falso positivo & Genuína predita como falsa/sintética & ``Muito ruim ... Comprei 02 Kits e foi entregue somente 1 Kit de cabide...'' \\
 \addlinespace
-Falso negativo & Falsa/sintética predita como genuína & ``Não gostei dos travesseiros... prazo de entrega é muito longo...'' \\
+Falso negativo & Falsa/sintética predita como genuína & ``Tudo como anunciado... Ótimo produto...'' \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -388,9 +390,9 @@ A análise registra os exemplos incorretamente classificados para revisão poste
 
 A comparação com a literatura deve considerar que os protocolos, conjuntos de dados, métricas e objetivos não são idênticos. Ainda assim, a Tabela~\ref{tab:comparacao} posiciona o presente trabalho em relação a referências relevantes da área.
 
-Quando a métrica não é diretamente comparável ou não foi extraída do material consultado, a comparação é feita de forma qualitativa.
+Quando os protocolos não são diretamente comparáveis, a tabela apresenta o resultado reportado no trabalho original e explicita a limitação da comparação.
 
-\citeonline{borges2025benchmark} avaliaram modelos clássicos e/ou contextuais para fake reviews em português brasileiro. Embora os protocolos não tenham sido reproduzidos integralmente, o trabalho é usado como referência direta de domínio e dataset. Neste relatório, a comparação numérica é limitada porque os resultados do artigo não foram reproduzidos sob o mesmo split e configuração experimental.
+\citeonline{borges2025benchmark} avaliaram combinações de classificadores tradicionais com representações BoW, TF-IDF e BERTimbau para fake reviews em português brasileiro. No artigo, o melhor resultado foi obtido com Regressão Logística usando BERTimbau: 96,55\% de acurácia e 96,54\% de F1-score em validação cruzada estratificada com 10 folds; no holdout com 30\% para teste, a mesma combinação atingiu 96,61\% de acurácia, 96,62\% de F1-score e 141 falsos positivos. Esses valores são reportados como referência direta de domínio e dataset, mas não constituem uma comparação controlada com este trabalho, pois o presente experimento usa outro protocolo, outro split e outra arquitetura.
 
 \begin{table}[H]
 \centering
@@ -402,13 +404,13 @@ Quando a métrica não é diretamente comparável ou não foi extraída do mater
 \toprule
 \makecell[c]{\textbf{Trabalho}} & \makecell[c]{\textbf{Dataset}} & \makecell[c]{\textbf{Modelo}} & \makecell[c]{\textbf{Métrica principal}} & \makecell[c]{\textbf{Resultado}} \\
 \midrule
-\citeonline{borges2025benchmark} & Fake Reviews PT-BR & Modelos clássicos e contextuais & Benchmark de classificação; métrica numérica não extraída do material local consultado & Referência direta de domínio e dataset; resultado não comparável numericamente neste relatório \\
+\citeonline{borges2025benchmark} & Fake Reviews PT-BR & Regressão Logística + BERTimbau & Acurácia, F1-score e falsos positivos & 96,55\% de acurácia e 96,54\% de F1-score em 10-fold; 96,61\% de acurácia, 96,62\% de F1-score e 141 FP em holdout \\
 \addlinespace
-\citeonline{kim2014cnn} & Datasets de classificação de sentenças em inglês & CNN para texto & Acurácia & Referência arquitetural; resultado não comparável diretamente ao dataset Fake Reviews PT-BR \\
+\citeonline{kim2014cnn} & Datasets de classificação de sentenças em inglês & CNN para texto & Acurácia em classificação de sentenças & Referência arquitetural; sem comparação numérica direta com o dataset Fake Reviews PT-BR \\
 \addlinespace
-\citeonline{souza2020bertimbau} & Corpora de pré-treinamento em português brasileiro & BERTimbau & Métricas de tarefas posteriores de PLN & Referência contextual para extensão futura; não avaliado neste experimento \\
+\citeonline{souza2020bertimbau} & Corpora de pré-treinamento em português brasileiro & BERTimbau & Avaliação em tarefas de PLN em português & Uso contextual no melhor resultado de Borges et al.; não avaliada neste experimento \\
 \addlinespace
-Este trabalho & Fake Reviews PT-BR & CNN 1D PyTorch & F1 macro e AUC-ROC da classe falsa/sintética & F1 macro de 0,962658 e AUC-ROC de 0,991639 \\
+Este trabalho & Fake Reviews PT-BR & CNN 1D PyTorch & F1 macro e AUC-ROC da classe falsa/sintética & F1 macro de 0,961319 e AUC-ROC de 0,991352 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -417,7 +419,7 @@ Este trabalho & Fake Reviews PT-BR & CNN 1D PyTorch & F1 macro e AUC-ROC da clas
 
 Este trabalho apresentou um experimento completo para classificação de reviews falsas/sintéticas em português brasileiro usando uma CNN 1D em PyTorch. O pipeline incluiu carregamento do dataset, limpeza mínima, análise exploratória, divisão estratificada, treinamento de baselines, treinamento do modelo neural, avaliação quantitativa e análise qualitativa de erros.
 
-A CNN 1D superou os baselines avaliados, atingindo 0,962658 de acurácia e 0,962658 de F1 macro. Esses resultados indicam que uma arquitetura convolucional simples pode ser competitiva para a classificação textual neste dataset. Contudo, as conclusões devem permanecer restritas ao escopo do experimento: o modelo distingue avaliações genuínas de avaliações sintéticas geradas no dataset, mas não comprova detecção de fraude humana nem de astroturfing completo.
+A CNN 1D superou os baselines avaliados, atingindo 0,961325 de acurácia e 0,961319 de F1 macro. Esses resultados indicam que uma arquitetura convolucional simples pode ser competitiva para a classificação textual neste dataset. Contudo, as conclusões devem permanecer restritas ao escopo do experimento: o modelo distingue avaliações genuínas de avaliações sintéticas geradas no dataset, mas não comprova detecção de fraude humana nem de astroturfing completo.
 
 Como continuidade, o projeto pode ser reaproveitado em um Trabalho de Conclusão de Curso como pipeline experimental reutilizável, como etapa intermediária entre modelos TF-IDF e BERTimbau, e como base para discussão de ameaças à validade. Trabalhos futuros podem incluir comparação com BERTimbau, CNN multi-kernel, validação cruzada, deduplicação antes da divisão dos dados e uso de metadados comportamentais ou grafos quando houver dados apropriados.
 
@@ -427,4 +429,4 @@ Foi utilizada ferramenta de IA generativa, como ChatGPT/Codex, como apoio na org
 
 \bibliography{referencias}
 
-\end{document}
+\end{document}\n

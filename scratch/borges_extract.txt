@@ -1,0 +1,677 @@
+pages 11
+---PAGE 1---
+RevistaBrasileiradeComputaçãoAplicada,April,2025
+DOI:10.5335/rbca.v17i1.16183
+Vol.17,No1,pp.12–22
+Homepage:seer.upf.br/index.php/rbca/index
+ORIGINAL PAPER
+Benchmarking Machine Learning Algorithms in Fake Reviews
+Detection in Brazilian Portuguese
+Eduardo Camargo Ribeiro Borges ,1, Cristiano Mesquita Garcia ,1, Samuel da
+Silva Feitosa ,2, Carlos Henrique Radavelli ,1
+1InstitutoFederaldeSantaCatarina(IFSC),2UniversidadeFederaldaFronteiraSul(UFFS)
+*ecamargoborges@gmail.com;cristiano.garcia@ifsc.edu.br;samuel.feitosa@uffs.edu.br;carlos.radavelli@ifsc.edu.br
+Received:2024-08-19.Revised:2025-04-25.Accepted:2025-04-30.
+Abstract
+Theproliferationoffakereviewshasbecomeagrowingconcernone-commerceplatforms,asthesereviewscanmislead
+consumersandharmthereputationofproductsandservicesoffered.Automaticdetectionoffakereviewsisachallenging
+task,asitrequiresanalyzingtextualdataandidentifyingsubtlepatternsthatindicatetheveracityofreviews.Since
+fakereviewdatasetsinPortuguesearescarce,inthiswork,wegenerateandproposeadatasetinBrazilianPortuguese
+forthedetectionoffakereviews. Then,fourmachinelearningalgorithms,combinedwiththreetextvectorization
+methods,areusedinatransferlearningschemeforfakereviewclassification.Acomparativeanalysisiscarriedout
+usingperformancemetricssuchasaccuracy,F1-score,andfalsepositives. Theresultsshowthat,fortheproposed
+dataset,thecombinationofLogisticRegressionandapre-trainedBERTmodelinBrazilianPortuguese,i.e.,BERTimbau,
+reachedthebestmetricvalues,reaching96.61%ofaccuracy.
+Keywords:Fakereviews;Machinelearning;Classification;NaturalLanguageProcessing.
+Resumo
+Aproliferaçãodeavaliaçõesfalsastornou-seumapreocupaçãocrescentenasplataformasdecomércioeletrônico,umavez
+queessasavaliaçõespodeminduzirosconsumidoresaoerroeprejudicarareputaçãodosprodutoseserviçosoferecidos.A
+detecçãoautomáticadeavaliaçõesfalsaséumatarefadesafiadora,poisexigeaanálisededadostextuaiseaidentificação
+depadrõessutisqueindicamaveracidadedasavaliações.Dadoqueconjuntosdedadosdeavaliaçõesfalsasemportuguês
+sãoescassos,esteestudogerouepropôsumconjuntodedadosemportuguêsbrasileiroparaadetecçãodeavaliações
+falsas.Foramutilizadosquatroalgoritmosdeaprendizadodemáquina,combinadoscomtrêsmétodosdevetorização
+detexto,emumesquemadeaprendizadoportransferênciaparaaclassificaçãodeavaliaçõesfalsas.Foirealizadauma
+análisecomparativautilizandoacurácia,F1-scoreefalsospositivos.Osresultadosmostramque,paraoconjuntode
+dadosproposto,acombinaçãodeRegressãoLogísticaeummodeloBERTpré-treinadoemportuguêsbrasileiro,i.e.,
+BERTimbau,alcançouosmelhoresvaloresdeacurácia,atingindo96,61%.
+Palavras-Chave:Avaliaçõesfalsas;Aprendizadodemáquina;Classificação;ProcessamentodeLinguagemNatural.
+1 Introduction 2021). With the popularization of the Internet, the
+situationchanged,andcustomershaveseveraloptions
+formarketplacesande-commerceplatforms.Inaddition,
+E-commercehasbeengrowingsignificantlyinthelast
+theycancheckreviews,provideproductfeedbackforother
+decades, boosted by the increase in Internet access
+users,andtracktheirproductsthroughlogisticsystems.It
+and the availability of online transactions. However,
+isalsonoticeablethattheCovid-19pandemicaccelerated
+implementinge-commercewasinitiallycomplexbecause
+companies’ migration to online (da Costa et al., 2021),
+customers did not trust this system (de Melo Cruz,
+tables 0
+---PAGE 2---
+Borgesetal. | RevistaBrasileiradeComputaçãoAplicada(2025),v.17,n.1,pp.12–22 13
+leadingtohistoricalrecordsinsalesinBrazil(Ebit,2021). 2.1 E-commerceanditsinherentrisks
+Therearerisksassociatedwithonlineshopping,such
+asfalsificationsandscams. Withtheincreaseinonline E-commercehasbeengrowingsignificantlyinthelast
+shopping,thereisanincreaseinvirtualscams. Sellers decades. AccesstotheInternetandpopularizingonline
+mightusetechniquestoachievecompetitiveadvantages transactionsplayedanimportantrole.Theconvenience
+and raise profits. A number of these companies have ofpurchasingfromhomeincreasedthepreferencefore-
+appealedtoillicitpractices,suchasusingfakereviews, commerceplatformscomparedtotraditionalshopping
+toimprovetheirreputationandincreasesales(Cao,2023). (de Andrade and Silva, 2017). Notably, the Covid-19
+Thisscenarioledcustomerstobecarefulandprioritize pandemicacceleratedphysicalstores’migrationtodigital
+trustworthyplatformsforonlineshopping(Mota,2021). oratleasttheironlinepresence(daCostaetal.,2021).
+Accountingforthat,sincecustomersalsoseekfeedback ThecommercialuseoftheInternetbeganintheearly
+from others when using e-commerce, they generally 90s. However, it took a few years to be considered a
+are confident that those platforms would hold reliable businessopportunity.Novaes(2016)mentionthat,from
+information. The use of Machine Learning (ML) can the90s,theinterestinbusinessontheInternetstarted
+be an effective alternative to deal with the problem of tobeintensified,raisingitscommercialstage.According
+fakereviewsone-commerceplatforms(Mohaweshetal., todeMeloCruz(2021),in1995,therealreadywereonline
+2021b). companiesthatlaterbecamehugemarketplayers,such
+Fakereviewsarearelevantproblemine-commerce, aseBayandAmazon.
+sincetheyarecriticalinpurchasingprocess. According AccordingtodeMeloCruz(2021),thebeginningofe-
+toBrightLocal,82%ofthecustomershadobservedafake commercewasdifficultsincecustomersdidnottrustthe
+reviewduringapurchase,andcitingaWashingtonPost onlineshoppingsystem. Nowadays,severaloptionsare
+research1, 61% of the Amazon reviews are believed to available,easingthecustomertocheckreviewsandscores
+befake. Inaddition,Akessonetal.(2023)estimatethe provided by previous customers. de Melo Cruz (2021)
+lossesofUSD0.12duetofakereviewsperdollarspent.To also mentions that the popularization of e-commerce
+demonstratetheimpactoffakereviews,areportercreated correlateswithaccesstotheInternetinseveralcountries.
+afakerestaurantandmadeitreachthetop1inLondon With the Internet becoming popular, da Costa et al.
+basedonfakereviews2. (2021) mentions that, in 2000s, companies such as
+Therefore,initiativestodetectandpreventfakereviews Americanas.comandMercadoLivrereachedagreatshare
+arewelcometoavoidfinanciallosses–forcustomersand oftheBrazilianmarket.However,todaCostaetal.(2021),
+companies–,anddistrustbythecustomer,promotinga the penetration of e-commerce in Brazil was smaller
+faircompetitionbetweene-sellers.Thus,thispaperaims (5.18%)thanincountriessuchasChina(approximately
+toevaluatetheefficiencyofmachinelearningalgorithms 28%). Therefore, even with the popularization of the
+indetectingfakereviewsinBrazilianPortuguese.Tothe Internet,theBrazilianmarketwasnotasrepresentative.
+bestofourknowledge,thisisthefirsttimeadatasetin Thescenariochangedatthebeginningof2020dueto
+Portuguesehasbeenproposedfordetectingfakereviews. theCovid-19pandemic(daCostaetal.,2021).Companies
+Ourcontributionsare3-fold:(a)adatasetinBrazilian withonlyphysicalstoreshadtobepresentinthedigital
+Portuguesetobeusedasabenchmarkforfakereviews world for survival. Thus, with the pandemics and the
+detection in such language; (b) a GPT-2 model in measurestoavoidagglomerations,onlineshoppinghas
+BrazilianPortugueseforfakereviewgeneration;and(c)a becomeessentialtopurchasingandreceivingproductsat
+comparativeanalysisoftraditionalclassifiersinthetask homewithalmostnohumancontact.AccordingtoEbit
+offakereviewdetection. (2021),asteadygrowthine-commercesalesisobserved
+This paper is organized as follows. Section 2 until2019.However,inthefirstquarter(Q1)of2020,the
+presents fundamental concepts; Section 3 describes growthwas46%comparedtothesameperiodin2019,and
+the methodology of this work, Section 4 details the in2021Q1,onlinesalesreachedBrazilianreal(BRL)53.4
+experimentalprotocol,Section5presentsanddiscusses billion,correspondingtoagrowthof31%incomparison
+theobtainedresults,andfinally,Section6concludesthis with2020Q1.
+paper. According to de Andrade and Silva (2017), risks in
+online shopping are elevated, with falsifications and
+scamsthemostfrequentrisks.Mota(2021)statedthatthe
+2 Background growthinonlineshoppingcorrelatedwiththeincrease
+in virtual scams. Therefore, e-customers tend to be
+Thissectionpresentsthefundamentalsoftheconcepts carefulandseektrustworthye-commerceplatformsto
+appliedinthispaper:e-commerceandassociatedrisks, makepurchases.Furthermore,whenusinge-commerce,
+fakereviews,andfakereviewdetection. customershavemoretimeandcanpurchasewhenever
+theywant(Nascimento,2011).AccordingtodeAndrade
+and Silva (2017), 57% of the surveyed people stated
+thatthelackofsecurityimpedesthedevelopmentofe-
+commerceinBrazil.Toemphasize,recentnewsreported
+Brazilianreais(BRL)2.5billioninfraudattemptsinthe
+1
+https://www.washingtonpost.com/business/economy/how-merchan firsthalfof20233
+ts-secretly-use-facebook-to-flood-amazon-with-fake-reviews
+/2018/04/23/5dad1e30-4392-11e8-8569-26fda6b404c7_story.html?
+2Availableat: https://www.youtube.com/watch?v=bqPARIKHbN8.
+AccessedonMarch12th,2024. 3Availableat:https://www.cnnbrasil.com.br/economia/brasil-reg
+tables 0
+---PAGE 3---
+14 Borgesetal. | RevistaBrasileiradeComputaçãoAplicada(2025),v.17,n.1,pp.12–22
+2.2 FakeReviews exchangeforatotalmoneyreturn.Insomecases,themore
+realisticthereview, themoremoneythefakereviewer
+When selecting a product/service to purchase online, receives. Heetal.(2022)alsomentionthat,financially,
+customersgenerallyevaluatedquantitativemetrics,such this may be worth it for e-sellers since a small sales
+asrating(commonlyusingastarscalebetween1and5), numbermayreturnthe“investment”.
+andqualitativeinformation,suchascomments/reviews.
+Resorting to reviews before purchasing is becoming a
+frequenthabitamong customers (Cao, 2023). Itis not 2.3 FakeReviewdetection
+a recent observation, since Valant (2015) mentioned
+Detecting fake reviews is not a trivial task, since the
+a survey applied by the European Consumer Centres’
+writing patterns of fake reviewers tend to change to
+Network obtained the information that 82% of the
+surpassapossiblefakereviewdetectionfilter(Mohawesh
+surveyed people read reviews on a product before
+et al., 2021a). However, there is the possibility that
+purchasing.
+customersmaydetectfakereviews.Thisapproacheases
+Akesson et al. (2023) analyzed the impact of (fake)
+understanding fake reviewers’ methods and patterns,
+reviews. In experiments executed in 2020 with 1,000
+indicatingpotentialdetectionrules(Salminenetal.,2022).
+adultsfromtheUK,theauthorsconcludedthatinflated
+The problem with this technique is that once the fake
+starratingsincreasethechanceofcustomerspurchasing
+reviewersunderstandthedetectionrules,theirmethods
+a“dont-buy”product.Thischanceincreaseswithafake
+changetoovercomethedetection(Salminenetal.,2022;
+review,reducingthechanceofpurchasinga“best-buy”
+Mohaweshetal.,2021a).
+product.Thedefinitionsof“dont-buy”and“best-buy”
+Another expected aspectcomplicating the detection
+wereperformedbyWhich? (Which?,2020),havingthe
+scenarioisthatfakereviewscanbesimilartogenuine
+“dont-buy”aspoor-qualityproducts,and“best-buy”as
+reviews(Ottetal.,2011). Therefore, machinelearning
+good-qualityproducts.
+methods for detection can be of great help. Ott et al.
+In this scenario, e-commerce companies leverage
+(2011)recruitedpeopleandusedautomatedclassifiersto
+differentwaystoincreasesales.Somemayuseunethical
+evaluatereviewsasfakeorgenuine;classifiersobtained
+methodstoprevailagainstcompetitors.Fakereviewsare
+the best performance in most metrics. Mohawesh
+among the frequent methods. Cao (2023) state that e-
+et al. (2021b) mentioned that most researchers, using
+sellersmanipulatecommentsontheirproductstolure
+manual detection, obtained at most 60% of accuracy.
+more buyers. These manipulated comments are fake
+Thus, usingmachinelearningwiththehelpofnatural
+reviews. Tufailetal.(2022)mentionthatfakereviews
+languageprocessingforfakereviewdetectionconstitutes
+are created to influence products’/services’ reputation
+aninterestingalternative.Inthiscase,themostsuitable
+ine-commerceplatforms.AccordingtoMohaweshetal.
+learning process is supervised learning, in which the
+(2021b), thesefraudulentreviewscanenhanceorpoor
+researchershaveexamplesoffakeandgenuinereviews
+aproduct/service/business’reputation.Mohaweshetal.
+(Mohaweshetal.,2021b).
+(2021b)mentionthatpositivereviewscanleadtogreater
+financialgains,whilenegativeonescancauselossesto
+e-sellers.Inaddition,fakereviewscanbeproducedeither
+3 Methodology
+bypeopleormachines. AccordingtoBrightLocal, 82%
+ofthesurveyedusershadalreadyobservedafakereview, ThispaperutilizesthemethodologyproposedbySalminen
+whilearound61%ofthereviewsonAmazonareestimated etal.(2022),whichgeneratesfakereviewsusingafine-
+tobefake. tunedGenerativePre-trainedTransformer(GPT),version
+Strategies for fake reviews may differ. In genuine 2(GPT-2)(Topaletal.,2021;Solaimanetal.,2019;Radford
+customer cases, the e-seller may offer benefits to etal.,2019).
+influencethefeedback. AccordingtoCao(2023),these Morespecifically, fromaparticularAmazondataset,
+benefitsincludecashbackandvoucherdiscounts.These Salminen et al. (2022) identified the 10 most frequent
+benefits can influence the customer to write a review categories. Fromthesecategories,theauthorsselected
+betterthanhis/heropinioninpositivecases,whilebeing theonewiththeleastfrequencyasareference,leading
+less rigorous in case of a negative review (Cao, 2023). toaselectionofapproximately2,500itemspercategory,
+AccordingtoMohaweshetal.(2021b), thiscanalsobe totaling40,000itemsforfine-tuning.Afterfine-tuning,
+consideredafakereview. Salminen et al. (2022) generated 2,000 reviews per
+Besidesofferingadvantagestorealcustomers,e-sellers category,usingthefirst5wordsfromsampledreviewsas
+also hire people to write reviews. He et al. (2022) inputforGPT-2,whichshouldgeneratetheremainder
+describedthefakereviewmarket.Theauthorsmention of the review. Therefore, 20,000 fake reviews were
+thatfake reviewers are recruited through social media generated.Intheend,Salminenetal.(2022)condensed
+platforms, such as Facebook. The Facebook groups thisinformationintoabalanced40,000dataset.
+were active, with some having around 16 thousand
+members.Theresearchersalsoconcludedthate-sellers
+usedthesegroupstopromotetheirproducts,requesting 4 ExperimentalProtocol
+thememberstopurchaseandwriteapositivereviewin
+This section details the experimental protocol applied
+in this paper, the description of the original dataset,
+the classifiers used for fake review detection, the text
+istra-r-25-bi-em-tentativas-de-fraude-no-e-commerce-no-1o-s
+emestre-diz-levantamento/.AccessedonMarch12th,2024. vectorizationmethods,theclassifiers,theperformance
+tables 0
+---PAGE 4---
+Borgesetal. | RevistaBrasileiradeComputaçãoAplicada(2025),v.17,n.1,pp.12–22 15
+metrics to evaluate the classifiers, and the evaluation each category using a fine-tuned GPT-2 for Brazilian
+strategies. Portuguese.Still,inlinewith(Salminenetal.,2022),we
+keptabalancednumberofreviewspercategory,totaling
+30,000reviews. TheGPT-2modelisavailableathttps:
+4.1 Dataset
+//huggingface.co/Ecrb/gpt2-reviews-ptbr.
+ThispaperleveragestheBrazilianE-CommercePublic
+DatasetbyOlist(OlistandSionek,2018)4. Thisdataset 4.2 TextVectorizationMethods
+consistsofeightsubsets,ofwhichoneisrelatedtoreviews.
+Thereviewsarelinkedtotheorders.However,weseein WeappliedBag-of-Words(BoW)(Harris,1954)andTerm
+Fig.1thatthevastmajorityaresingle-productsales. In Frequency- Inverse of Document Frequency(TF-IDF)
+addition, thesubsetrelatedtoproductdescriptionalso (SaltonandBuckley,1988)astextvectorizationmethods.
+hadtobeusedtoextractproductcategoryandperform BoW counts the occurrence of words using a tabular
+similarly as Salminen et al. (2022). Thus, since most structureinwhichthefeatures(orcolumns)arethewords,
+ordersincludeonlyoneitem,weusedtheorders’reviews andeachrowcorrespondstoadocument(ortext).
+asiftheywereproductreviewstokeepinthemethodology TF-IDFis similar to BoW(Garcia et al., 2025b), but
+presentedbySalminenetal.(2022). Fromthe100,000 insteadofmaintainingthecounts,TF-IDFcalculatesthe
+records available, only 40,000 were considered useful importance of words across documents using Eqs. (1)
+sincethereviewfieldwasfilled. to(3),wheredisadocumentortext.
+count(term)
+TF(term,d)= , (1)
+sum(count(termsind))
+numberofdocuments
+IDF(term)=log (2)
+document_frequency(term)
+Figure1:Itemsperorder.
+TFIDF(term,d)=TF(term,d)×IDF(term) (3)
+FollowingthemethodologyproposedbySalminenetal. Furthermore,weincludedpre-trainedrepresentations
+(2022), we observed that the Olist dataset has fewer in this paper. We used BERTimbau (Souza et al.,
+reviews than the dataset used by the authors. We had 2020), a pre-trained BERT-based (Devlin et al.,
+toselectthe15mostfrequentcategoriestohaveafinal 2019) model in Brazilian Portuguese. Bidirectional
+datasetofreasonablesize,asshowninFig.2. Encoder Representation from Transformers (BERT)
+is a Transformer-based language model developed by
+Google (Devlin et al., 2019). It is extensively used in
+taskssuchasclassification(Thumaetal.,2023),spam
+detection(Otienoetal.,2023),etc. BERTispre-trained
+using unlabeled data for masked language modeling
+(MLM)andnextsentenceprediction(NSP).IntheMLM
+task,theBERTmodellearnstherelationshipsbetween
+wordsinasentence,whileintheNSP,therelationships
+betweensentencesarelearned(Devlinetal.,2019).These
+tasks increase BERT’s capability of generalization and
+contextualization.
+4.3 Classifiers
+In this paper, we evaluate four classifiers: (a) Logistic
+Regression,(b)DecisionTree,(c)RandomForest,and(d)
+SupportVectorMachine(SVM).WeusedPython3.8and
+Figure2:Categorydistribution,consideringthe15most
+Sci-kitLearn(Pedregosaetal.,2011),andtheclassifiers
+frequentcategories.
+useddefaultparameters.
+Therefore, we generated 1,000 fake reviews for 4.3.1 LogisticRegression
+LogisticRegression(LR)isaclassificationmodelsuitable
+forbinaryproblems(Cox,1958;NickandCampbell,2007).
+4Availableat:https://www.kaggle.com/datasets/olistbr/brazilia Basedoninput,thismodelcancalculatetheprobability
+n-ecommerce.AccessedonMarch13th,2024. ofabinaryeventbyapplyingalogisticfunction,ensuring
+tables 0
+---PAGE 5---
+16 Borgesetal. | RevistaBrasileiradeComputaçãoAplicada(2025),v.17,n.1,pp.12–22
+aprobabilisticinterpretation(daCruzMachadoBenatti, (Eq.(5))andrecall(Eq.(6)).TherationalebehindtheF1-
+2017). Scoreisthatitrequiresbothprecisionandrecalltobehigh
+The relationship between the binary dependent toachieveahighF1-Score.
+and independent variables is quantified by estimating
+coefficients, typically using maximum likelihood
+estimation. Logistic regression is extensively utilized precision= TP (5)
+across various disciplines, including medicine, social TP+FP
+sciences,andmachinelearning,forapplicationssuchas
+heartdiseaseprediction(Godoyetal.,2023),creditrisk
+assessment (Runchi et al., 2023), and spam detection TP
+(Berrouetal.,2023).
+recall=
+TP+FN
+(6)
+F1-ScoreofaclassismathematicallydescribedinEq.(7)
+4.3.2 DecisionTree
+as:
+DecisionTree(DT)isasupervisedlearningalgorithmthat
+learnsdatasplits,representingthesplitsinatreewithsplit
+andleafnodes.Eachnoderepresentsachoicebetween(or
+precision ×recall
+among)differentpaths,generatedaccordingtocriteria F1(class)=2× class class (7)
+suchasGiniindex(deAlmeidaTeodoroandKappel,2020). precision class +recall class
+Thetreeisconstructedbyrecursivelypartitioningthe
+Inalltheabove-mentionedmetrics,theinterpretationis
+datasetintosubsetsbasedontheattributethatyieldsthe
+thatthecloserto1(or100%),thebetter. TheF1-Scores
+highestinformation gain or lowestimpurity. Decision
+arereportedusingtheaverageoftheclasses.
+treesarevaluedfortheirinterpretabilityandsimplicity
+(deAlmeidaTeodoroandKappel,2020).
+4.5 Evaluationstrategies
+4.3.3 RandomForest
+Inthispaper, weperformedtwoevaluations. Thefirst
+ARandomForest(RF)isanensemblelearningmethod
+wasacross-validationperformedconsideringastratified
+thatcombinesmanyDecisionTrees,whichgenerallyuses
+K-foldstrategyusing10folds.Therefore,theresultsare
+differentdatapartitionsandfeatures(Leiteetal.,2023).
+averagedintermsofAccuracyandF1. Thisstrategyis
+The method introduces randomness by bootstrapping
+robustformodelselection(Prustyetal.,2022).
+samplesandconsideringarandomsubsetoffeaturesfor
+Sincewealsoreporttheresultsintermsofconfusion
+splittingateachnode,enhancingmodelrobustnessand
+matrices, we performed a hold-out strategy, splitting
+generalization. RFs can improve accuracy and reduce
+the data into 70% for training and 30% for testing in
+overfittingsincetheyconsiderthevotesofalltreeswhen
+a stratified manner. The confusion matrices show the
+makingaprediction(Leiteetal.,2023).
+resultsobtainedusingthetestset.
+4.3.4 SupportVectorMachine
+SupportVectorMachineisamodelthatlearnsboundaries 5 Results
+andmaximizesthemarginstocreatebetterseparations
+betweenclasses(daCruzMachadoBenatti,2017).SVMs This section presents the results, organized by text
+canachieveinterestingperformancewhenusinghigh- vectorizationmethods.First,itisimportanttostatewhat
+dimensionalfeaturesasinput,whichisthecasewithtexts the errors, i.e., false positive and false negative, mean.
+ingeneral(Thumaetal.,2023). Inourproblem,afalsepositivemeansagenuinereview
+isclassifiedasafakereview. Ontheotherhand,afalse
+negativeisafakereviewclassifiedasagenuinereview.For
+4.4 Metrics analysispurposes,weassumefalsenegativesaremore
+prejudicialsincethefakereviewwouldstillbeavailable
+Sincethispapergeneratesabalanceddatasetfordetection,
+totheuser,whomightbeinfluencedbyittomakebad
+accuracycanbeconsideredasuitablemetric.Thismetric
+purchasedecisions.
+considerstruepositives(TP),truenegatives(TN),false
+The results are presented in terms of confusion
+positives (FP), and false negatives (FP). Eq. (4) shows
+matrices,whilethemetricvaluesarereportedinTables1
+the formula for accuracy. In other words, accuracy
+and2.
+correspondstotheratiobetweenhitsandthenumberof
+classifieditems.
+5.1 BrazilianPortugueseFakeReviewDetection
+dataset
+TP+FN
+accuracy=
+TP+TN+FP+FN
+(4)
+Following the procedures presented in Salminen et al.
+(2022),wegeneratedafakereviewsdatasetinBrazilian
+In addition, we used the confusion matrix, which Portuguese, based on the Olist dataset presented in
+visually emphasizes the true and false components Section4.1. Thegenerateddatasetisavailableonlineat
+describedabove,andMacroF1-Score,whichisinsensitive https://github.com/cristianomg10/fake-reviews-ptb
+todataimbalance.F1-Score(Eq.(7))isbasedonprecision r-dataset/.
+tables 0
+---PAGE 6---
+Borgesetal. | RevistaBrasileiradeComputaçãoAplicada(2025),v.17,n.1,pp.12–22 17
+5.2 Classificationresults
+The results are presented considering the text
+vectorization methods. In this subsection, we report
+theresultsinthefollowingorder:Bag-of-Words(BoW),
+TF-IDF,andBERT.Wefixedthenumberofdimensions
+in 500 for Bow and TF-IDF, while BERTimbau solely
+provides768-dimensionrepresentations.
+5.2.1 Bag-of-Words(BoW)
+Figs.3to6showtheconfusionmatrixobtainedusingBoW
+andtherespectiveclassifiers.InFig.3,weseetheresults
+forLogisticRegression.Weseethatitobtainedinteresting
+resultsregardingtruepositives,truenegatives,andfalse
+positives.Only434reviewswereconfusedbytheclassifier.
+Figure4:ConfusionmatrixusingDecisionTreeand
+Bag-of-Words.
+Figure3:ConfusionmatrixusingLogisticRegressionand
+Bag-of-Words.
+Figure5:ConfusionmatrixusingRandomForestand
+Bag-of-Words.
+Considering the Decision Tree, it obtained inferior
+resultscomparedtoLogisticRegression,reachingalmost
+double the false positives obtained by the Logistic
+Regression. Fig. 4 shows the confusion matrix for the
+combinationDecisionTreeandBoW.Bothtruepositives
+andtruenegativescorrespondtoaround90%ofthose
+obtainedbyLogisticRegression.
+Random Forest, as expected due to its robustness,
+obtained better results than Decision Tree. However,
+theresultsobtainedareslightlyworsethanthoseofthe
+LogisticRegression.Fig.5presentstheconfusionmatrix
+forthecombinationRandomForestandBoW.
+At last, Fig. 6 shows the confusion matrix for SVM
+andBoW.Itobtainedinterestingresultsintermsoftrue
+positives and true negatives. However, SVM obtained
+slightlyworseresultsthanLogisticRegressionregarding
+falsepositiveswhileperformingbetterintermsoffalse
+negatives.
+Toconcludethissubsection,LogisticRegressionwith Figure6:ConfusionmatrixusingSVMand
+BoWreachedthebestresultsintermsofaccuracy,F1,and Bag-of-Words.
+falsepositives.Precisely,therespectivevaluesare90.49%
+±0.40,90.49%±0.40,and434.
+confusionmatrixforLogisticRegressionandTF-IDF.We
+see that Logistic Regression with BoW obtained better
+5.2.2 TF-IDF
+resultsthanLogisticRegressionandTF-IDF.Anincrease
+Figs.7to10showtheconfusionmatrixobtainedusing
+in false positives and false negatives is noticed in this
+TF-IDFandtherespectiveclassifiers. Fig.7showsthe
+tables 0
+---PAGE 7---
+18 Borgesetal. | RevistaBrasileiradeComputaçãoAplicada(2025),v.17,n.1,pp.12–22
+scenario.
+Figure9:ConfusionmatrixusingRandomForestand
+TF-IDF.
+Figure7:ConfusionmatrixusingLogisticRegressionand
+TF-IDF.
+ConsideringthecombinationDecisionTreeandTF-IDF,
+Fig.8showstheconfusionmatrixobtained.Inopposition
+to using BoW, the Decision Tree together with TF-IDF
+obtainedbetterresults,decreasingthefalsenegativesand
+falsepositivesbyalmost10%.
+Figure10:ConfusionmatrixusingSVMandTF-IDF.
+positives and false negatives are the smallest for this
+setting. RandomForestandTF-IDFreached89.64%of
+accuracyand89.56%ofF1-Score.
+5.2.3 BERT
+Figs.11to14showtheconfusionmatrixobtainedusing
+Figure8:ConfusionmatrixusingDecisionTreeand thepre-trainedBERT,i.e.,BERTimbau,andtherespective
+TF-IDF. classifiers. Fig.11showstheconfusionmatrixobtained
+byusingLogisticRegression.Wecanseeanoutstanding
+resultconsideringthelownumberoffalsepositivesand
+Fig. 9 shows the confusion matrix regarding the false negatives. Regarding the false positive, it is the
+RandomForestandTF-IDF.Althoughthiscombination lowestvalueobtainedintheexperiments.
+resultedininterestingresults,therewasanincreasein
+Regarding the results from the Decision Tree with
+falsepositivescomparedtoRandomForestandBoW.In
+BERT, shown in Fig. 12, the number of false positives
+addition,thiscombinationobtainedfewerfalsenegatives
+alignswiththepreviouslypresentedcombinations,being
+than the previous approaches, mainly considering the
+considerablyhigh. Itreached589falsepositivesinthe
+Decision Tree. Itis expected since Random Forestis a
+testset,showingthatasingleDecisionTreeisnotrobust
+combinationofDecisionTrees,beingmorerobust.
+enoughforthisdataset.Inaddition,thenumberoffalse
+Finally,usingSVMandTF-IDF,thissettingresultedin negatives increased dramatically compared to Logistic
+anincreaseof45%infalsepositivescomparedtoSVMand RegressionandBERT.
+BoW.Fig.10showstheconfusionmatrixregardingSVM Fig.13showstheresultsforRandomForestandBERT.
+andTF-IDF. WeseethatacombinationofDecisionTreescouldreduce
+ConsideringthecombinationusingTF-IDF,Random toalmostathird,comparedtothefalsepositivesobtained
+Forestobtained the bestresults. The numbers offalse by Decision Tree. However, Random Forest obtained
+tables 0
+---PAGE 8---
+Borgesetal. | RevistaBrasileiradeComputaçãoAplicada(2025),v.17,n.1,pp.12–22 19
+Figure11:ConfusionmatrixusingLogisticRegression Figure14:ConfusionmatrixusingSVMandBERT.
+andBERT.
+obtaining193falsepositivesinthetestset. Inaddition,
+SVMandBERThittruepositivesandtruenegativesmore
+than10%abovetheDecisionTree.
+Table1displaystheresults,consideringastratifiedK-
+fold strategy with 10 folds. The values in bold are the
+best considering the text vectorization method, while
+thevalueswiththestar(*)aregloballythebest.Wesee
+that,fortheproposeddataset,LogisticRegressionwasthe
+bestintwoscenarios,i.e.,usingBag-of-Words(BoW)and
+BERT.Interestingly,usingTF-IDF,RandomForestwasthe
+bestclassifier,almost4percentpointsonaverageabove
+theresultsobtainedbyLogisticRegression.Furthermore,
+BERTprovidedthebestrepresentations.Itisexpecteddue
+toitsabilitytocapturecontextsinsteadofonlycounting
+wordsandmeasuringtheimportanceofwordswithout
+perceivingtheirrelations.
+Figure12:ConfusionmatrixusingDecisionTreeand
+BERT. Table1:Summarizationoftheresults.Resultswere
+obtainedusingstratifiedK-foldusing10folds.
+TextVect. Classifier Accuracy(%) F1-Score(%)
+BoW LogisticRegression 90.49±0.40 90.49±0.40
+BoW DecisionTree 83.26±0.44 83.24±0.45
+BoW RandomForest 88.90±0.80 88.84±0.83
+BoW SVM 89.87±0.53 89.75±0.63
+TF-IDF LogisticRegression 85.90±0.69 85.88±0.70
+TF-IDF DecisionTree 83.54±0.67 83.52±0.67
+TF-IDF RandomForest 89.40±0.63 89.37±0.64
+TF-IDF SVM 86.15±0.60 86.08±0.61
+BERT LogisticRegression 96.55±0.31* 96.54±0.31*
+BERT DecisionTree 87.02±0.60 87.02±0.60
+BERT RandomForest 93.31±0.43 93.28±0.43
+BERT SVM 96.12±0.49 96.06±0.54
+Table 2 shows the results using a stratified holdout
+strategy. Precisely, the results were obtained from
+the test set, which corresponded to 30% of the data.
+Again,LogisticRegressionwithBERTresultedinthebest
+Figure13:ConfusionmatrixusingRandomForestand
+BERT. performanceamongtheevaluatedstrategies,reachingthe
+smallestnumberoffalsepositives.
+almostdoublethefalsepositivesobtainedbytheLogistic
+Regression. 6 Conclusion
+Finally, Fig.14showstheconfusionmatrixforSVM Fake reviews have become a concern on e-commerce
+and BERT. SVM was the closest to Logistic Regression, platformssincetheycanjeopardizeproductreputation
+tables 0
+---PAGE 9---
+20 Borgesetal. | RevistaBrasileiradeComputaçãoAplicada(2025),v.17,n.1,pp.12–22
+Table2:Resultswereobtainedusingthetestsetina BrightLocal (n.d.). Why are fake reviews a problem?
+holdoutstrategyusing30%ofthedataforthetest. Available at: https://www.brightlocal.com/learn/
+TextVect. Classifier Accuracy(%) F1-Score(%) FP review-management/fake-reviews/why-are-fake-revie
+BoW Log.Regression 90.29 90.30 434 ws-a-problem/.
+BoW DecisionTree 82.44 82.61 748
+BoW RandomForest 88.62 88.74 465
+Cao,C.(2023).TheImpactofFakeReviewsofOnlineGoods
+BoW SVM 90.13 90.01 499
+TF-IDF Log.Regression 86.00 85.91 660 onConsumers,BCPBusiness&Management. http://dx
+TF-IDF DecisionTree 83.87 84.01 685 .doi.org/10.54691/bcpbm.v39i.4208.
+TF-IDF RandomForest 89.64 89.56 503
+TF-IDF SVM 85.90 85.61 724 Cox, D. R. (1958). The Regression Analysis of Binary
+BERT Log.Regression 96.61* 96.62* 141 Sequences,JournaloftheRoyalStatisticalSocietySeries
+BERT DecisionTree 86.89 86.89 589
+BERT RandomForest 93.33 93.38 271
+B:StatisticalMethodology20(2):215–232. Availableat
+BERT SVM 96.40 96.38 193 https://www.jstor.org/stable/2983890.
+daCosta,P.T.G.C.,deAlmeida,J.F.F.A.,Fernandes,J.M.
+and lead users to make decisions based on unreal andOrtega,L.M.(2021).E-commercenoBrasil:Revisão
+information. Fake review datasets are scarce in the Sistemática de Literatura de 2011 a 2021, Brazilian
+literature.Therefore,thispaperpresentedafakereview JournalofBusiness 3(4): 2969–2982. http://dx.doi
+datasetinBrazilianPortuguesebasedontheOlistdataset. .org/10.34140/bjbv3n4-014.
+FollowingtheprocedurepresentedinSalminenetal.
+da Cruz Machado Benatti, N. C. (2017). Aprendizagem
+(2022), we fine-tuned a GPT-2 model to generate the
+de Máquina Aplicada a Investimentos Imobiliários,
+fake reviews. In addition, we evaluated three text
+SimpósiodeMétodosNuméricosemEngenharia-UFPR.
+vectorization methods, i.e., BoW, TF-IDF, and BERT
+Availableathttps://hdl.handle.net/1884/93040.
+(BERTimbau),togetherwithfourclassifiers,i.e.,Logistic
+Regression, Decision Tree, Random Forest, and SVM. de Almeida Teodoro, L. and Kappel, M. A. A. (2020).
+LogisticRegressionwithBERTreachedthebestvalues AplicaçãodeTécnicasdeAprendizadodeMáquinapara
+regardingF1-Score,accuracy,andfalsepositives. Predição de Risco de Evasão Escolar em Instituições
+Although this paper contributes with resources for PúblicasdeEnsinoSuperiornoBrasil,RevistaBrasileira
+theliterature,i.e.,aGPT-2modelforreviewgeneration deInformáticanaEducação. http://dx.doi.org/10.57
+in Brazilian Portuguese and a fake review dataset in 53/rbie.2020.28.0.838.
+BrazilianPortuguese,ithassomelimitations.Forexample,
+computer-generated reviews do not necessarily have de Andrade, M. C. F. and Silva, N. G. (2017). O
+thecharacteristicsoffakereviews. Ontheotherhand, comércio eletrônico (e-commerce): um estudo com
+companies such as Yelp leverage an unknown filter consumidores,PerspectivasemGestão&Conhecimento
+algorithmtodetectfakereviews(Mohaweshetal.,2021a). 7(1):98–111. http://dx.doi.org/10.21714/2236-417X2
+Thishighlightsthedifficultyofperformingresearchin 017v7n1.
+thisarea.
+deMeloCruz,W.L.(2021). CrescimentodoE-commerce
+In future works, we intend to develop methods for
+no Brasil: Desenvolvimento, Serviços Logísticos e o
+incrementaldetectionoffakereviews,usingthereviews
+asatextstream(Garciaetal.,2025a), whichisamore ImpulsodaPandemiadeCovid-19,GeoTextos. http:
+realisticscenarioforonlinee-commerceplatforms(Gama
+//dx.doi.org/10.9771/geo.v17i1.44572.
+etal.,2014). Inatextstream, textsarriveindividually,
+Devlin, J., Chang, M.-W., Lee, K. and Toutanova, K.
+andanincrementalclassifiermustlearnfromanddiscard
+(2019). BERT: Pre-training of Deep Bidirectional
+thenewinputtext.Furthermore,insuchscenarios,itis
+TransformersforLanguageUnderstanding,Proceedings
+possibletoevaluatepotentialconceptdriftsinthefake
+of the 2019 Conference of the North American Chapter
+reviews.
+oftheAssociationforComputationalLinguistics:Human
+LanguageTechnologies,Volume1(LongandShortPapers)
+. http://dx.doi.org/10.18653/v1/N19-1423.
+References
+Ebit (2021). 44ª ed. webshoppers. Available at https:
+Akesson,J.etal.(2023). TheImpactofFakeReviewson
+//eyagencia.com.br/wp-content/uploads/2021/09/Web
+DemandandWelfare,Technicalreport,NationalBureau
+shoppers_44-relatorio-2021-resultados-ecommerce-e
+ofEconomicResearch.http://dx.doi.org/10.3386/w31
+bit.pdf.
+836.
+Gama, J., Žliobaite˙, I., Bifet, A., Pechenizkiy, M. and
+Berrou, B.K., AlKalbani, K., Antonijevic, M., Zivkovic, Bouchachia, A. (2014). A Survey on Concept Drift
+M., Bacanin, N. and Nikolic, B. (2023). Training Adaptation,ACMComputingSurveys(CSUR)46(4):1–37.
+a Logistic Regression Machine Learning Model for http://dx.doi.org/10.1145/252381.
+SpamEmailDetectionusingtheTeaching-Learning-
+based-OptimizationAlgorithm, Proceedingsofthe1st Garcia,C.M.etal.(2025a). ConceptDriftAdaptationin
+International Conference on Innovation in Information TextStreamMiningSettings:ASystematicReview,ACM
+TechnologyandBusiness(ICIITB2022),Vol.104,p.306. TransactionsonIntelligentSystemsandTechnology.http:
+http://dx.doi.org/10.2991/978-94-6463-110-4_22. //dx.doi.org/10.1145/370492.
+tables 0
+---PAGE 10---
+Borgesetal. | RevistaBrasileiradeComputaçãoAplicada(2025),v.17,n.1,pp.12–22 21
+Garcia,C.M.etal.(2025b). ImprovingSamplingMethods Pedregosa, F. et al. (2011). Scikit-learn: Machine
+forFine-tuningSentenceBERTinTextStreams,Lecture Learning in Python, Journal of Machine Learning
+NotesinComputerScience(LNCS,volume15319). http: Research12:2825–2830. Availableathttps://dl.acm.o
+//dx.doi.org/10.1007/978-3-031-78495-8_28. rg/doi/pdf/10.5555/1953048.2078195.
+Godoy, L. C., Farkouh, M. E., Austin, P. C., Shah, B. R.,
+Prusty, S., Patnaik, S. and Dash, S. K. (2022). SKCV:
+Qiu, F., Sud, M., Wijeysundera, H. C., Mancini, G. J.
+StratifiedK-foldCross-validationonMLClassifiersfor
+andKo,D.T.(2023). Predictingleftmainstenosisin
+PredictingCervicalCancer,FrontiersinNanotechnology
+stableischemicheartdiseaseusinglogisticregression
+4:972421. http://dx.doi.org/10.3389/fnano.2022.97
+andboostedtrees,AmericanHeartJournal256:117–127.
+2421.
+http://dx.doi.org/10.1016/j.ahj.2022.11.004.
+Radford, A. et al. (2019). Language Models are
+Harris,Z.S.(1954). DistributionalStructure,Word10(2-
+3):146–162. http://dx.doi.org/10.1080/00437956.19
+UnsupervisedMultitaskLearners,OpenAIblog1(8):9.
+54.11659520.
+Availableathttps://cdn.openai.com/better-languag
+e-models/language_models_are_unsupervised_multita
+He,S.,Hollenbeck,B.andProserpio,D.(2022).TheMarket sk_learners.pdf.
+for Fake Reviews, MarketingScience 41(5): 896–921.
+Availableat: https://papers.ssrn.com/sol3/papers. Runchi,Z.,Liguo,X.andQin,W.(2023). Anensemble
+cfm?abstract_id=3664992. creditscoringmodelbasedonlogisticregressionwith
+heterogeneousbalancingandweightingeffects,Expert
+Leite,D.R.A.etal.(2023). Métododeaprendizagemde SystemswithApplications212:118732. http://dx.doi.o
+máquina para classificação da intensidade do desvio rg/10.2139/ssrn.4167821.
+vocal utilizando random forest, Journal of Health
+Informatics. Availableathttps://jhi.sbis.org.br/ Salminen,J.,Kandpal,C.,Kamel,A.,Jung,S.andJansen,B.
+index.php/jhi-sbis/article/view/814. (2022). CreatingandDetectingFakeReviewsofOnline
+Mohawesh,R.etal.(2021a). AnalysisofConceptDriftin Products,JournalofRetailingandConsumerServices. ht
+FakeReviewsDetection,ExpertSystemswithApplications
+tp://dx.doi.org/10.1016/j.jretconser.2021.102771.
+169:114318. http://dx.doi.org/10.1016/j.eswa.2020 Salton, G. and Buckley, C. (1988). Term-weighting
+.114318.
+ApproachesinAutomaticTextRetrieval, Information
+Mohawesh,R.etal.(2021b). FakeReviewsDetection:A Processing&Management24(5):513–523. http://dx.d
+Survey,IEEEAccess9:65771–65802. http://dx.doi.o oi.org/10.1016/0306-4573(88)90021-0.
+rg/10.1109/ACCESS.2021.3075573.
+Solaiman, I. et al. (2019). Release Strategies and the
+Mota,M.d.O.(2021). EstudodeCasosobreSegurançaem Social Impacts of Language Models, arXiv preprint
+E-commerce,PontifíciaUniversidadeCatólicadeGoiás. arXiv:1908.09203 . http://dx.doi.org/10.48550/ar
+Availableathttps://repositorio.pucgoias.edu.br/js Xiv.1908.09203.
+pui/handle/123456789/3206.
+Souza,F.,Nogueira,R.andLotufo,R.(2020). BERTimbau:
+Nascimento,R.(2011). E-CommercenoBrasil:Perfildo
+pretrainedBERTmodelsforBrazilianPortuguese,9th
+Mercado e do E-consumidor Brasileiro. Available at:
+BrazilianConferenceonIntelligentSystems,BRACIS. http:
+https://bibliotecadigital.fgv.br/dspace/handle/1 //dx.doi.org/10.1007/978-3-030-61377-8_28.
+0438/8182.
+Nick,T.G.andCampbell,K.M.(2007).LogisticRegression, Thuma, B. S. et al. (2023). Benchmarking Feature
+TopicsinBiostatisticspp.273–301. http://dx.doi.org/1 Extraction Techniques for Textual Data Stream
+0.1891/9781617050992.0039. Classification, 2023 International Joint Conference
+on Neural Networks (IJCNN), IEEE, pp. 1–8. http:
+Novaes,A.(2016). LogísticaeGerenciamentodaCadeiade //dx.doi.org/10.1109/IJCNN54540.2023.10191369.
+Distribuição,ElsevierBrasil.
+Topal,M.O.,Bas,A.andvanHeerden,I.(2021).Exploring
+OlistandSionek,A.(2018). BrazilianE-CommercePublic
+TransformersinNaturalLanguageGeneration: GPT,
+DatasetbyOlist. http://dx.doi.org/10.34740/KAGGLE BERT,andXLNet,ArXiv2102.08036. https://doi.org/
+/DSV/195341.
+10.48550/arXiv.2102.08036.
+Otieno,D.O.,Namin,A.S.andJones,K.S.(2023). The
+Tufail,H.etal.(2022). TheEffectofFakeReviewsone-
+ApplicationoftheBERTTransformerModelforPhishing
+CommerceDuringandAfterCovid-19Pandemic:SKL-
+EmailClassification,2023IEEE47thAnnualComputers,
+Software,andApplicationsConference(COMPSAC),IEEE, Based Fake Reviews Detection, Inst. of Electrical and
+pp.1303–1310. http://dx.doi.org/10.1109/COMPSAC57 ElectronicsEngineers. http://dx.doi.org/10.1109/A
+700.2023.00198.
+CCESS.2022.3152806.
+Ott, M., Choi, Y., Cardie, C. and Hancock, J. (2011). Valant, J.(2015). OnlineConsumerReviews: TheCase
+FindingDeceptiveOpinionSpambyAnyStretchofthe ofMisleadingorFakeReviews,EuropeanParliamentary
+Imagination,JournalofRetailingandConsumerServices. ResearchService.Availableathttps://www.europarl.eur
+http://dx.doi.org/10.48550/arXiv.1107.4557. opa.eu/thinktank/en/document/EPRS_BRI(2015)571301.
+tables 0
+---PAGE 11---
+22 Borgesetal. | RevistaBrasileiradeComputaçãoAplicada(2025),v.17,n.1,pp.12–22
+Which? (2020). The Real Impact of Fake Reviews: a
+BehaviouralExperimentonhowFakeReviewsInfluence
+Consumer Choices, TheBehaviouralist . Available at:
+https://media.product.which.co.uk/prod/files/fil
+e/gm-32c0deb8-a98c-4a3f-85db-8393284106a6-fake-r
+eviews-summary-report.pdf.
+tables 0
