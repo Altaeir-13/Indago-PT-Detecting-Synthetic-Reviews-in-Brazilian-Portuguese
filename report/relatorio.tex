@@ -3,8 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[brazilian]{babel}
-\usepackage{newtxtext}
-\usepackage{newtxmath}
+\usepackage{mathptmx}
 \usepackage{geometry}
 \usepackage{setspace}
 \usepackage{indentfirst}
@@ -57,7 +56,7 @@
 \textbf{Data:} Julho de 2026\par
 \vspace{0.6cm}
 \textbf{Repositório do projeto:}\par
-\url{https://github.com/Altaeir-13/Indago-PT-Detecting-Synthetic-Reviews-in-Brazilian-Portuguese}
+\url{https://github.com/Altaeir-13/Indago-PT}
 \end{minipage}
 
 \vfill
@@ -125,14 +124,14 @@ em que \(T\) corresponde ao tamanho da sequência textual e \(x_t\) representa o
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.82\textwidth]{class_distribution.png}
+\includegraphics[width=0.82\textwidth]{outputs/figures/class_distribution.png}
 \caption{Distribuição das classes no dataset após a limpeza}
 \fontefig
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth,height=0.56\textheight,keepaspectratio]{category_distribution.png}
+\includegraphics[width=0.95\textwidth,height=0.56\textheight,keepaspectratio]{outputs/figures/category_distribution.png}
 \caption{Distribuição das categorias de produto no dataset}
 \fontefig
 \end{figure}
@@ -149,14 +148,14 @@ A principal limitação conceitual do dataset está relacionada à natureza da c
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.88\textwidth]{review_token_length_hist.png}
+\includegraphics[width=0.88\textwidth]{outputs/figures/review_token_length_hist.png}
 \caption{Distribuição do tamanho das avaliações em tokens}
 \fontefig
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.88\textwidth]{review_token_length_by_class.png}
+\includegraphics[width=0.88\textwidth]{outputs/figures/review_token_length_by_class.png}
 \caption{Distribuição do tamanho das avaliações por classe}
 \fontefig
 \end{figure}
@@ -175,29 +174,30 @@ O método implementado segue um pipeline textual composto pelas seguintes etapas
 
 O dropout foi utilizado como mecanismo de regularização para reduzir overfitting. A camada linear final gera um logit, que é usado diretamente pela função BCEWithLogitsLoss durante o treinamento. Essa função combina a sigmoid e a entropia cruzada binária de forma numericamente estável. Na avaliação, a sigmoid é aplicada ao logit para obter a probabilidade associada à classe genuína, e a probabilidade da classe falsa/sintética é calculada de forma complementar. A otimização foi feita com Adam, e o treinamento utilizou early stopping para interromper a execução quando a validação deixava de melhorar.
 
-
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.25}
 \caption{Arquitetura da CNN 1D implementada}
 \label{tab:arquitetura-cnn}
-\begin{tabularx}{\textwidth}{@{} L{4.5cm} Y L{5.5cm} @{}}
+\begin{tabularx}{\textwidth}{@{} L{3.7cm} L{5.0cm} Y @{}}
 \toprule
-\makecell[c]{\textbf{Camada}} & \makecell[c]{\textbf{Configuração}} & \makecell[c]{\textbf{Função}} \\
+\makecell[c]{\textbf{Camada}} &
+\makecell[c]{\textbf{Configuração}} &
+\makecell[c]{\textbf{Função}} \\
 \midrule
-Embedding & vocab\_size=30000;\newline embedding\_dim=128;\newline padding\_idx=0 & Representar tokens como vetores densos \\
+Embedding & \texttt{vocab\_size=30000}, \texttt{embedding\_dim=128}, \texttt{padding\_idx=0} & Representar tokens como vetores densos. \\
 \addlinespace
-Conv1D & 256 filtros;\newline kernel\_size=7 & Capturar padrões locais da sequência textual \\
+Conv1D & 256 filtros, \texttt{kernel\_size=7} & Capturar padrões locais da sequência textual. \\
 \addlinespace
-ReLU & sem parâmetros treináveis & Introduzir não linearidade \\
+ReLU & Sem parâmetros treináveis & Introduzir não linearidade. \\
 \addlinespace
-Global Max Pooling & agregação máxima global na sequência & Selecionar ativações mais relevantes \\
+Global Max Pooling & Agregação máxima global na sequência & Selecionar ativações mais relevantes. \\
 \addlinespace
-Dropout & p=0.5 & Reduzir overfitting \\
+Dropout & \texttt{p=0.5} & Reduzir overfitting. \\
 \addlinespace
-Linear & 256 $\rightarrow$ 1 & Gerar logit da classificação binária \\
+Linear & 256 \(\rightarrow\) 1 & Gerar o logit da classificação binária. \\
 \addlinespace
-Sigmoid na avaliação & aplicada após a saída linear & Converter logit em probabilidade \\
+Sigmoid na avaliação & Aplicada após a saída linear & Converter o logit em probabilidade. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -221,13 +221,14 @@ O experimento foi executado localmente com aceleração por GPU, utilizando uma 
 
 \begin{table}[H]
 \centering
+\renewcommand{\arraystretch}{1.2}
 \caption{Ambiente de execução registrado}
 \label{tab:ambiente-execucao}
-\begin{tabular}{ll}
+\begin{tabularx}{0.82\textwidth}{@{} L{5.4cm} Y @{}}
 \toprule
-Item & Valor \\
+\textbf{Item} & \textbf{Valor} \\
 \midrule
-Sistema operacional & Windows-11-10.0.26200-SP0 \\
+Sistema operacional & Windows 11 10.0.26200-SP0 \\
 Python & 3.14.5 \\
 PyTorch & 2.11.0+cu128 \\
 scikit-learn & 1.9.0 \\
@@ -237,36 +238,36 @@ matplotlib & 3.11.0 \\
 seaborn & 0.13.2 \\
 GPU detectada via CUDA & Sim \\
 Modelo da GPU & NVIDIA GeForce RTX 3060 Ti \\
-torch.cuda.is\_available() & True \\
+\texttt{torch.cuda.is\_available()} & True \\
 Dispositivo utilizado no treinamento & cuda \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
-
 
 \begin{table}[H]
 \centering
+\renewcommand{\arraystretch}{1.2}
 \caption{Hiperparâmetros principais da CNN 1D}
 \label{tab:hiperparametros}
-\begin{tabular}{ll}
+\begin{tabularx}{0.72\textwidth}{@{} L{4.5cm} Y @{}}
 \toprule
-Parâmetro & Valor \\
+\textbf{Parâmetro} & \textbf{Valor} \\
 \midrule
-vocab\_size & 30000 \\
-max\_len & 256 \\
-embedding\_dim & 128 \\
-filters & 256 \\
-kernel\_size & 7 \\
-dropout & 0.5 \\
-lr & 0.001 \\
-batch\_size & 128 \\
-epochs & 50 \\
-patience & 3 \\
-loss & BCEWithLogitsLoss \\
-optimizer & Adam \\
-random\_state & 13 \\
+\texttt{vocab\_size} & 30000 \\
+\texttt{max\_len} & 256 \\
+\texttt{embedding\_dim} & 128 \\
+\texttt{filters} & 256 \\
+\texttt{kernel\_size} & 7 \\
+\texttt{dropout} & 0.5 \\
+\texttt{lr} & 0.001 \\
+\texttt{batch\_size} & 128 \\
+\texttt{epochs} & 50 \\
+\texttt{patience} & 3 \\
+\texttt{loss} & BCEWithLogitsLoss \\
+\texttt{optimizer} & Adam \\
+\texttt{random\_state} & 13 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 Neste experimento, foi adotada uma configuração única de hiperparâmetros, definida com base em valores usuais para modelos CNN 1D em classificação textual e na viabilidade computacional da avaliação. O melhor checkpoint da CNN foi selecionado com base na menor perda de validação, por meio de early stopping.
@@ -319,21 +320,21 @@ A CNN 1D atingiu 0,961325 de acurácia, 0,960828 de F1-score para a classe falsa
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.86\textwidth]{cnn_loss_curve.png}
+\includegraphics[width=0.86\textwidth]{outputs/figures/cnn_loss_curve.png}
 \caption{Curva de perda da CNN 1D durante o treinamento}
 \fontefig
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.86\textwidth]{cnn_accuracy_curve.png}
+\includegraphics[width=0.86\textwidth]{outputs/figures/cnn_accuracy_curve.png}
 \caption{Curva de acurácia da CNN 1D durante o treinamento}
 \fontefig
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.76\textwidth]{confusion_matrix_cnn1d.png}
+\includegraphics[width=0.76\textwidth]{outputs/figures/confusion_matrix_cnn1d.png}
 \caption{Matriz de confusão da CNN 1D no conjunto de teste}
 \fontefig
 \end{figure}
@@ -350,14 +351,14 @@ Apesar dos resultados positivos, a interpretação deve ser cautelosa. A classe 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.76\textwidth]{confusion_matrix_logistic_regression.png}
+\includegraphics[width=0.76\textwidth]{outputs/figures/confusion_matrix_logistic_regression.png}
 \caption{Matriz de confusão do baseline TF-IDF + Regressão Logística}
 \fontefig
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.76\textwidth]{confusion_matrix_linear_svm.png}
+\includegraphics[width=0.76\textwidth]{outputs/figures/confusion_matrix_linear_svm.png}
 \caption{Matriz de confusão do baseline TF-IDF + SVM Linear}
 \fontefig
 \end{figure}
@@ -388,11 +389,15 @@ A análise registra os exemplos incorretamente classificados para revisão poste
 
 \section{Comparação com Trabalhos Relacionados}
 
-A comparação com a literatura deve considerar que os protocolos, conjuntos de dados, métricas e objetivos não são idênticos. Ainda assim, a Tabela~\ref{tab:comparacao} posiciona o presente trabalho em relação a referências relevantes da área.
+A comparação com a literatura deve considerar que os protocolos, conjuntos de dados, métricas e objetivos não são idênticos. Ainda assim, a Tabela~\ref{tab:comparacao} posiciona o presente trabalho em relação a referências relevantes da área, incluindo estudos internacionais que também utilizam CNN para detecção de fake reviews, o que fortalece a justificativa da escolha arquitetural deste trabalho.
 
 Quando os protocolos não são diretamente comparáveis, a tabela apresenta o resultado reportado no trabalho original e explicita a limitação da comparação.
 
 \citeonline{borges2025benchmark} avaliaram combinações de classificadores tradicionais com representações BoW, TF-IDF e BERTimbau para fake reviews em português brasileiro. No artigo, o melhor resultado foi obtido com Regressão Logística usando BERTimbau: 96,55\% de acurácia e 96,54\% de F1-score em validação cruzada estratificada com 10 folds; no holdout com 30\% para teste, a mesma combinação atingiu 96,61\% de acurácia, 96,62\% de F1-score e 141 falsos positivos. Esses valores são reportados como referência direta de domínio e dataset, mas não constituem uma comparação controlada com este trabalho, pois o presente experimento usa outro protocolo, outro split e outra arquitetura.
+
+Para contextualizar a CNN 1D como escolha arquitetural, \citeonline{deshai2023unmasking} propuseram um método que combina CNN com \textit{Adaptive Particle Swarm Optimization} (APSO) para detecção de fake reviews em cinco datasets internacionais (Ott, Amazon, Yelp, TripAdvisor e IMDb), atingindo 99,4\% de acurácia e superando classificadores clássicos de aprendizado de máquina. É relevante notar que os autores relatam hiperparâmetros muito próximos aos utilizados neste trabalho, como \textit{kernel\_size} igual a 7, \textit{batch\_size} igual a 128 e otimizador Adam com taxa de aprendizado 0,001, o que reforça que as escolhas de configuração adotadas seguem práticas já validadas na literatura internacional para CNNs aplicadas a texto. No mesmo artigo, os autores citam o estudo de \citeonline{vidanagama2020survey}, no qual uma CNN sem otimização adicional atingiu 92,7\% de acurácia no dataset Yelp e 97,3\% no dataset Amazon, evidenciando que arquiteturas convolucionais relativamente simples já obtêm desempenho competitivo nessa tarefa antes mesmo de otimizações adicionais.
+
+Esses dois trabalhos internacionais mostram que a CNN é uma arquitetura estabelecida e frequentemente utilizada para classificação de fake reviews, o que sustenta a escolha metodológica deste trabalho. Contudo, cabe destacar que os datasets, idiomas e protocolos de avaliação usados por \citeonline{deshai2023unmasking} e por \citeonline{vidanagama2020survey} diferem do dataset Fake Reviews PT-BR utilizado neste experimento, de modo que os valores numéricos não podem ser comparados diretamente com os resultados obtidos aqui; eles servem como evidência de que a arquitetura escolhida é consistente com a literatura, e não como benchmark direto de desempenho.
 
 \begin{table}[H]
 \centering
@@ -400,20 +405,57 @@ Quando os protocolos não são diretamente comparáveis, a tabela apresenta o re
 \caption{Comparação objetiva com trabalhos relacionados}
 \label{tab:comparacao}
 \footnotesize
-\begin{tabularx}{\textwidth}{@{} L{3.2cm} L{3.2cm} L{3.1cm} L{3.1cm} Y @{}}
+\begin{tabularx}{\textwidth}{@{} L{3.4cm} L{2.8cm} L{3.2cm} Y @{}}
 \toprule
-\makecell[c]{\textbf{Trabalho}} & \makecell[c]{\textbf{Dataset}} & \makecell[c]{\textbf{Modelo}} & \makecell[c]{\textbf{Métrica principal}} & \makecell[c]{\textbf{Resultado}} \\
+\makecell[c]{\textbf{Trabalho}} &
+\makecell[c]{\textbf{Dataset}} &
+\makecell[c]{\textbf{Modelo}} &
+\makecell[c]{\textbf{Resultado principal}} \\
 \midrule
-\citeonline{borges2025benchmark} & Fake Reviews PT-BR & Regressão Logística + BERTimbau & Acurácia, F1-score e falsos positivos & 96,55\% de acurácia e 96,54\% de F1-score em 10-fold; 96,61\% de acurácia, 96,62\% de F1-score e 141 FP em holdout \\
+
+\citeonline{borges2025benchmark} &
+Fake Reviews PT-BR &
+Regressão Logística + BERTimbau &
+96,55\% de acurácia e 96,54\% de F1-score em 10-fold; no holdout, 96,61\% de acurácia, 96,62\% de F1-score e 141 falsos positivos. \\
+
 \addlinespace
-\citeonline{kim2014cnn} & Datasets de classificação de sentenças em inglês & CNN para texto & Acurácia em classificação de sentenças & Referência arquitetural; sem comparação numérica direta com o dataset Fake Reviews PT-BR \\
+\citeonline{vidanagama2020survey} &
+Yelp e Amazon &
+CNN para texto &
+92,7\% de acurácia no Yelp e 97,3\% no Amazon, conforme reportado por \citeonline{deshai2023unmasking}. \\
+
 \addlinespace
-\citeonline{souza2020bertimbau} & Corpora de pré-treinamento em português brasileiro & BERTimbau & Avaliação em tarefas de PLN em português & Uso contextual no melhor resultado de Borges et al.; não avaliada neste experimento \\
+\citeonline{deshai2023unmasking} &
+Ott, Amazon, Yelp, TripAdvisor e IMDb &
+CNN + Adaptive PSO &
+99,4\% de acurácia, superando classificadores clássicos de aprendizado de máquina. \\
+
 \addlinespace
-Este trabalho & Fake Reviews PT-BR & CNN 1D PyTorch & F1 macro e AUC-ROC da classe falsa/sintética & F1 macro de 0,961319 e AUC-ROC de 0,991352 \\
+\citeonline{kim2014cnn} &
+Classificação de sentenças em inglês &
+CNN para texto &
+Referência arquitetural para CNNs em texto; sem comparação numérica direta com o dataset deste trabalho. \\
+
+\addlinespace
+Este trabalho &
+Fake Reviews PT-BR &
+CNN 1D PyTorch &
+0,961319 de F1 macro e 0,991352 de AUC-ROC para a classe falsa/sintética. \\
+
 \bottomrule
 \end{tabularx}
+
+\vspace{0.35em}
+\begin{minipage}{\textwidth}
+\footnotesize
+\textit{Observação:} os resultados da literatura não são diretamente comparáveis aos deste trabalho, pois diferem em idioma, dataset, protocolo experimental, representação textual e métricas de avaliação.
+\end{minipage}
 \end{table}
+
+\vspace{0.6em}
+
+
+Em síntese, a CNN 1D deste trabalho obteve resultado próximo ao estado da arte reportado por \citeonline{borges2025benchmark} para o dataset em português brasileiro, mesmo utilizando uma arquitetura mais simples e computacionalmente mais barata do que um modelo baseado em Transformer. Ao mesmo tempo, os resultados internacionais de \citeonline{deshai2023unmasking} e \citeonline{vidanagama2020survey} indicam que arquiteturas convolucionais têm se mostrado consistentemente eficazes para esse tipo de tarefa em diferentes idiomas e domínios, o que reforça a adequação metodológica da escolha realizada neste experimento.
 
 \section{Conclusão}
 
