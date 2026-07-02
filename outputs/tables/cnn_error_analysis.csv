@@ -1,21 +1,21 @@
 error_type,category,label,prediction,prob_or_score_fake_label_0,text
-false_positive_genuine_predicted_fake,baby,1,0,0.9018574357032776,Muito satisfeito com o produto. Entrega foi feita bem antes do prazo
-false_positive_genuine_predicted_fake,perfumery,1,0,0.9367848634719849,Comprei dois kit para maquiagem chegou apenas um. Recomendo muito sempre comprei nas lannister sempre chegou certo primeira vez que não veio certo
-false_positive_genuine_predicted_fake,garden_tools,1,0,0.576543927192688,o sistema mudou automaticamente o produto que eu comprei por outro veio errado
-false_positive_genuine_predicted_fake,computers_accessories,1,0,0.8690681457519531,Eu conprei dois Tanner e recebi apenas um
-false_positive_genuine_predicted_fake,auto,1,0,0.7583203911781311,"Muito bom o produto,e a entrega foi realizada antes do prazo. Excelente"
-false_positive_genuine_predicted_fake,electronics,1,0,0.7034974098205566,O prazo já expirou e não recebi o produto
-false_positive_genuine_predicted_fake,housewares,1,0,0.6277880668640137,"Recebi um produto que não veio conforme eu pedi, recebi outro"
-false_positive_genuine_predicted_fake,sports_leisure,1,0,0.5177391767501831,"alguns tablets de bcaa vieram quebrados, diminuindo a qualidade do produto"
-false_positive_genuine_predicted_fake,housewares,1,0,0.8073293566703796,"COMPREI 05 COPOS E RECEBI APENAS 01 COPO, POR FAVOR SOLICITO A ENTREGA DOS DEMAIS COPOS QUE FIZ A COMPRA E EFETUEI O PAGAMENTO"
-false_positive_genuine_predicted_fake,electronics,1,0,0.5954577922821045,"Gostei muito do atendimento, levando em conta a pontualidade. O único problema é que as pilhas não eram compatíveis. Eu recomendo o produto."
-false_negative_fake_predicted_genuine,garden_tools,0,1,0.0359686017036438,Compra feita a mais de um mês e não chegou até o momento. Tudo ocorreu conforme combinado.
-false_negative_fake_predicted_genuine,telephony,0,1,0.3591296076774597,"Só compro com stark pq vocês ainda não recebi o produto, ainda não recebi o produto."
-false_negative_fake_predicted_genuine,health_beauty,0,1,0.0121384859085083,"Chegou tudo certinho mas aconteceu problema com o código de rastreio, não faz sentido que ele não corresponde ao anunc"
-false_negative_fake_predicted_genuine,housewares,0,1,0.43639469146728516,"Coisa simples + mto lindu...Chegou antes do prazo. Produto ótimo, eficiente, prático e de"
-false_negative_fake_predicted_genuine,bed_bath_table,0,1,0.15780019760131836,Comprei duas cortinas e recebi apenas uma.
-false_negative_fake_predicted_genuine,computers_accessories,0,1,0.2948038578033447,"Apesar da tinta na cor diferente da foto, se vier o kit de tinta ser mexicana, nunca mais compro nessa"
-false_negative_fake_predicted_genuine,toys,0,1,0.05415719747543335,"produto veio conforme descrito lacrado, porém com defeito na embalagem e na embalagem do produto, o mesmo está desatual"
-false_negative_fake_predicted_genuine,health_beauty,0,1,0.2324923872947693,"Produtos de ótima qualidade. Ajudam a alimentar as vias de aterrissagem.Tudo certo, só que é um pouco pequ"
-false_negative_fake_predicted_genuine,garden_tools,0,1,0.01187431812286377,"ENTREGA RÁPIDA, ESTOU SATISFEITA."
-false_negative_fake_predicted_genuine,health_beauty,0,1,0.3273226022720337,"Muito boa loja de segurança de vcs.O produto chegou bem antes do prazo, o que é ótimo!"
+false_positive_genuine_predicted_fake,baby,1,0,0.7400484681129456,Muito satisfeito com o produto. Entrega foi feita bem antes do prazo
+false_positive_genuine_predicted_fake,perfumery,1,0,0.6649953722953796,Comprei dois kit para maquiagem chegou apenas um. Recomendo muito sempre comprei nas lannister sempre chegou certo primeira vez que não veio certo
+false_positive_genuine_predicted_fake,health_beauty,1,0,0.6421588659286499,A frequência do produto está incompatível com a rede elétrica brasileira e não foi mostrado na descrição do produto antes de ser comprado
+false_positive_genuine_predicted_fake,toys,1,0,0.5809289216995239,"Entrega super atrasada, não recebi ainda o produto e nem me deram satisfação de nada."
+false_positive_genuine_predicted_fake,computers_accessories,1,0,0.8731428980827332,Eu conprei dois Tanner e recebi apenas um
+false_positive_genuine_predicted_fake,auto,1,0,0.7361596822738647,"Muito bom o produto,e a entrega foi realizada antes do prazo. Excelente"
+false_positive_genuine_predicted_fake,electronics,1,0,0.6826676726341248,O prazo já expirou e não recebi o produto
+false_positive_genuine_predicted_fake,sports_leisure,1,0,0.5129367113113403,"alguns tablets de bcaa vieram quebrados, diminuindo a qualidade do produto"
+false_positive_genuine_predicted_fake,electronics,1,0,0.7986251711845398,"Gostei muito do atendimento, levando em conta a pontualidade. O único problema é que as pilhas não eram compatíveis. Eu recomendo o produto."
+false_positive_genuine_predicted_fake,bed_bath_table,1,0,0.6126964688301086,Sempre cumprem os prazos. Muito bom.
+false_negative_fake_predicted_genuine,garden_tools,0,1,0.05882614850997925,Compra feita a mais de um mês e não chegou até o momento. Tudo ocorreu conforme combinado.
+false_negative_fake_predicted_genuine,health_beauty,0,1,0.02589970827102661,"Chegou tudo certinho mas aconteceu problema com o código de rastreio, não faz sentido que ele não corresponde ao anunc"
+false_negative_fake_predicted_genuine,housewares,0,1,0.20656007528305054,"Coisa simples + mto lindu...Chegou antes do prazo. Produto ótimo, eficiente, prático e de"
+false_negative_fake_predicted_genuine,bed_bath_table,0,1,0.4178159236907959,Gostei muito! Recomendo a todos!Chegou antes do prazo!Produto conforme esperado.
+false_negative_fake_predicted_genuine,bed_bath_table,0,1,0.054446518421173096,Comprei duas cortinas e recebi apenas uma.
+false_negative_fake_predicted_genuine,computers_accessories,0,1,0.09161680936813354,"Apesar da tinta na cor diferente da foto, se vier o kit de tinta ser mexicana, nunca mais compro nessa"
+false_negative_fake_predicted_genuine,perfumery,0,1,0.46634453535079956,"Chegou em 4 dias super rápido, recomendo! Chegou dentro do prazo, produto de ótima qualidade"
+false_negative_fake_predicted_genuine,toys,0,1,0.06373035907745361,"produto veio conforme descrito lacrado, porém com defeito na embalagem e na embalagem do produto, o mesmo está desatual"
+false_negative_fake_predicted_genuine,health_beauty,0,1,0.16188108921051025,"Produtos de ótima qualidade. Ajudam a alimentar as vias de aterrissagem.Tudo certo, só que é um pouco pequ"
+false_negative_fake_predicted_genuine,garden_tools,0,1,0.006460964679718018,"ENTREGA RÁPIDA, ESTOU SATISFEITA."

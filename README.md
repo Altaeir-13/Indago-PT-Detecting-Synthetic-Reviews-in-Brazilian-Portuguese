@@ -1,4 +1,4 @@
-﻿# Indago PT: Detecting Synthetic Reviews in Brazilian Portuguese
+# Indago PT: Detecting Synthetic Reviews in Brazilian Portuguese
 
 Experimento reproduzivel para a 3a avaliacao de Aprendizado Profundo:
 classificacao binaria de reviews em portugues brasileiro usando uma CNN 1D em
@@ -6,7 +6,7 @@ PyTorch, comparada com baselines classicos de PLN.
 
 Repositorio do projeto:
 
-https://github.com/Altaeir-13/Indago-PT-Detecting-Synthetic-Reviews-in-Brazilian-Portuguese
+<https://github.com/Altaeir-13/Indago-PT-Detecting-Synthetic-Reviews-in-Brazilian-Portuguese>
 
 ## Objetivo
 
@@ -32,7 +32,7 @@ A pasta `src/` foi removida porque toda a logica de carregamento, EDA, preproces
 
 Use o Fake Reviews PT-BR Dataset:
 
-https://github.com/cristianomg10/fake-reviews-ptbr-dataset
+<https://github.com/cristianomg10/fake-reviews-ptbr-dataset>
 
 O arquivo esperado e:
 
@@ -42,14 +42,14 @@ data/raw/true_fake_dataset_top15.csv
 
 Para preparar o dataset:
 
-1. Acesse https://github.com/cristianomg10/fake-reviews-ptbr-dataset.
+1. Acesse <https://github.com/cristianomg10/fake-reviews-ptbr-dataset>.
 2. Baixe o arquivo `true_fake_dataset_top15.csv`.
 3. Coloque o arquivo em `data/raw/true_fake_dataset_top15.csv`.
 4. Abra `notebooks/01_experimento_fake_reviews.ipynb` e execute as celulas em ordem.
 
 A base e derivada do dataset publico da Olist:
 
-https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+<https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce>
 
 Colunas reais detectadas na execucao:
 
@@ -248,6 +248,7 @@ Este projeto pode ser reaproveitado no TCC como:
 
 BERTimbau permanece como extensao futura ou comparacao posterior, nao como
 modelo principal desta avaliacao.
+
 ## Exportacao para PDF
 
 A fonte oficial do relatorio e o arquivo LaTeX:
